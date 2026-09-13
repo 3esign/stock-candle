@@ -44,7 +44,7 @@ const founderAddresses = founder.gameAddresses();
 assert.strictEqual(founderAddresses.config.toBase58(), a.config.toBase58());
 assert.strictEqual(founderAddresses.pot.toBase58(), a.pot.toBase58());
 assert.strictEqual(founderAddresses.record.toBase58(), "BM8VDDMpo9hPdQUwuYn8rxtNGUWYFSwegg44N2vbCyVh");
-assert.strictEqual(founder.FOUNDER_BUY_RAW, 5_000_000_000_000n);
+assert.strictEqual(founder.FOUNDER_MIN_BUY_RAW, 1_000_000_000_000n);
 assert.strictEqual(founder.INPUT_LAMPORTS, 220_000_000n);
 assert.strictEqual(admin.EXPECTED_GAME_ALT_ADDRESS_COUNT, 21);
 assert.strictEqual(founder.addSlippage(5_526_078n), 5_581_339n);

@@ -11,6 +11,7 @@
 - Prvi STOCK CANDLE quick tunnel se povezao ali javno vracao Cloudflare 404. Uzrok iz startup loga: `cloudflared tunnel --url` je ucitao postojeci korisnicki `config.yml` i credential-file iako je trebalo da bude accountless quick tunnel. Lek: launch quick tunnel uvek dobija eksplicitan minimalni projektni `--config`.
 - Eksplicitan `builder/cloudflared-quick.yml` uklonio je inherited tunnel profil: novi javni health radi, objavljuje `signs:false` i `sends:false`, a trade endpoint ostaje 503 dok finalni manifest nije on-chain potvrdjen.
 - Prvi finalni ALT pokušaj je bez slanja stao na očekivanih 22 naspram 21 jedinstvene statičke adrese. Uzrok: modelirani prelaunch Pump account shape imao je jednu statičku adresu više od deduplikovanog živog XCNDL `buy_v2`; lek je zamrznuti i testirati stvarni final-mint skup od 21 adrese, ne raniji modelirani broj.
+- Prvi javni post-launch browser QA dobio je stari `PRE-LAUNCH` iako je cache-busted manifest već bio živ. Uzrok: GitHub Pages CDN je još služio neversionirani `app.js`/manifest put; lek je verzionisati oba launch resursa u HTML-u i JS fetch-u, jer samo `cache: no-store` u klijentu nije dovoljno za trenutni shared-cache prelaz.
 
 # Iskustva
 

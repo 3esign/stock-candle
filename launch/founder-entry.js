@@ -32,6 +32,7 @@ const {
 const {
   bondingCurvePda,
   getBuySolAmountFromTokenAmount,
+  getBuyTokenAmountFromSolAmount,
   normalizeQuoteMint,
   OnlinePumpSdk,
   PUMP_PROGRAM_ID,
@@ -52,7 +53,7 @@ const DEPLOYER_KEYPAIR = "C:/Svemir/tools/solana-cli/artifacts/stockpulse-mainne
 const RECEIPT_PATH = path.resolve(__dirname, "onchain.receipt.json");
 const INPUT_LAMPORTS = 220_000_000n;
 const MIN_SOL_RESERVE_LAMPORTS = 25_000_000n;
-const FOUNDER_BUY_RAW = 5_000_000_000_000n;
+const FOUNDER_MIN_BUY_RAW = 1_000_000_000_000n;
 const SLIPPAGE_BPS = 100n;
 const MAX_PRICE_IMPACT_PCT = 0.01;
 const MAX_PACKET_BYTES = 1232;
@@ -179,7 +180,7 @@ async function tokenBalance(connection, mint, owner) {
   return { ata, amount: BigInt(account.amount.toString()), exists: true };
 }
 
-async function founderCost(connection) {
+async function founderCost(connection, amountRaw = FOUNDER_MIN_BUY_RAW) {
   const online = new OnlinePumpSdk(connection);
   const curvePda = bondingCurvePda(MINT);
   const [global, feeConfig, bondingCurve, mintInfo, curveInfo, resolved] = await Promise.all([
@@ -200,10 +201,36 @@ async function founderCost(connection) {
     feeConfig,
     mintSupply: new BN(mintState.supply.toString()),
     bondingCurve,
-    amount: new BN(FOUNDER_BUY_RAW.toString()),
+    amount: new BN(amountRaw.toString()),
     quoteMint,
   }).toString());
-  return { global, bondingCurve, exact, maximum: addSlippage(exact) };
+  return { global, feeConfig, mintSupply: new BN(mintState.supply.toString()), bondingCurve, quoteMint, exact, maximum: addSlippage(exact) };
+}
+
+async function affordableFounderPlan(connection, quoteBalanceRaw) {
+  const context = await founderCost(connection, FOUNDER_MIN_BUY_RAW);
+  const spendBudget = BigInt(quoteBalanceRaw) * 98n / 100n;
+  let amountRaw = BigInt(getBuyTokenAmountFromSolAmount({
+    global: context.global,
+    feeConfig: context.feeConfig,
+    mintSupply: context.mintSupply,
+    bondingCurve: context.bondingCurve,
+    amount: new BN(spendBudget.toString()),
+    quoteMint: context.quoteMint,
+  }).toString());
+  amountRaw -= amountRaw % 1_000n;
+  if (amountRaw < FOUNDER_MIN_BUY_RAW) throw new Error("available TSLAx cannot safely buy the 1M game minimum");
+  const exact = BigInt(getBuySolAmountFromTokenAmount({
+    global: context.global,
+    feeConfig: context.feeConfig,
+    mintSupply: context.mintSupply,
+    bondingCurve: context.bondingCurve,
+    amount: new BN(amountRaw.toString()),
+    quoteMint: context.quoteMint,
+  }).toString());
+  const maximum = addSlippage(exact);
+  if (maximum > BigInt(quoteBalanceRaw)) throw new Error("dynamic founder maximum exceeds the available TSLAx balance");
+  return { amountRaw, exact, maximum, spendBudget, global: context.global, bondingCurve: context.bondingCurve };
 }
 
 async function readState(connection) {
@@ -259,35 +286,40 @@ async function jupiterQuote() {
 
 async function commandStatus(connection) {
   const state = await readState(connection);
-  let cost = null;
+  let plan = null;
   try {
-    const value = await founderCost(connection);
-    cost = { exactRaw: value.exact.toString(), exactTslax: ui(value.exact, 8), maximumRaw: value.maximum.toString(), maximumTslax: ui(value.maximum, 8) };
+    const value = await affordableFounderPlan(connection, state.sourceQuote.amount);
+    plan = { amountRaw: value.amountRaw.toString(), amountXcndl: ui(value.amountRaw, 6), maximumRaw: value.maximum.toString(), maximumTslax: ui(value.maximum, 8) };
   } catch (error) {
-    cost = { unavailable: error.message };
+    plan = { unavailable: error.message };
   }
-  console.log(JSON.stringify({ sent: false, founderTargetRaw: FOUNDER_BUY_RAW.toString(), founderTargetUi: "5000000", state: publicState(state), cost }, null, 2));
+  console.log(JSON.stringify({ sent: false, founderMinimumRaw: FOUNDER_MIN_BUY_RAW.toString(), state: publicState(state), affordablePlan: plan }, null, 2));
 }
 
 async function commandSwap(connection, send) {
   const before = await readState(connection);
-  const cost = await founderCost(connection);
+  const cost = await founderCost(connection, FOUNDER_MIN_BUY_RAW);
   if (before.sourceQuote.amount >= cost.maximum) {
-    console.log(JSON.stringify({ alreadyFunded: true, state: publicState(before), requiredMaximumTslax: ui(cost.maximum, 8) }, null, 2));
-    return;
+    try {
+      const existingPlan = await affordableFounderPlan(connection, before.sourceQuote.amount);
+      if (existingPlan.amountRaw >= FOUNDER_MIN_BUY_RAW) {
+        console.log(JSON.stringify({ alreadyFunded: true, state: publicState(before), affordableXcndl: ui(existingPlan.amountRaw, 6) }, null, 2));
+        return;
+      }
+    } catch (_error) {}
   }
   const quote = await jupiterQuote();
   const minimumOut = BigInt(quote.otherAmountThreshold);
   const postMinimum = before.sourceQuote.amount + minimumOut;
   const impact = Number(quote.priceImpactPct || 0);
-  if (postMinimum < cost.maximum) throw new Error(`0.22 SOL minimum output ${ui(postMinimum, 8)} TSLAx does not cover 5M max ${ui(cost.maximum, 8)}`);
+  if (postMinimum < cost.maximum) throw new Error(`0.22 SOL minimum output ${ui(postMinimum, 8)} TSLAx does not cover the 1M game minimum ${ui(cost.maximum, 8)}`);
   if (!Number.isFinite(impact) || impact > MAX_PRICE_IMPACT_PCT) throw new Error(`Jupiter price impact ${quote.priceImpactPct} is too high`);
   if (before.solLamports - INPUT_LAMPORTS < MIN_SOL_RESERVE_LAMPORTS) throw new Error("0.22 SOL swap would breach the 0.025 SOL reserve");
   const plan = {
     inputSol: "0.22",
     minimumOutputTslax: ui(minimumOut, 8),
     postMinimumTslax: ui(postMinimum, 8),
-    requiredMaximumTslax: ui(cost.maximum, 8),
+    minimumGameBuyTslax: ui(cost.maximum, 8),
     priceImpactPct: quote.priceImpactPct,
     route: (quote.routePlan || []).map((row) => row.swapInfo?.label).filter(Boolean),
   };
@@ -320,7 +352,8 @@ async function commandSwap(connection, send) {
   }, "confirmed");
   if (confirmation.value.err) throw new Error(`swap failed: ${JSON.stringify(confirmation.value.err)}`);
   const after = await readState(connection);
-  if (after.sourceQuote.amount < cost.maximum) throw new Error("swap confirmed but TSLAx readback is below founder buy maximum");
+  const affordable = await affordableFounderPlan(connection, after.sourceQuote.amount);
+  if (affordable.amountRaw < FOUNDER_MIN_BUY_RAW) throw new Error("swap confirmed but TSLAx readback is below the game minimum");
   saveReceipt({ founderSwap: { at: new Date().toISOString(), signature, plan, after: publicState(after) } });
   console.log(JSON.stringify({ sent: true, signature, after: publicState(after) }, null, 2));
 }
@@ -357,23 +390,23 @@ async function buildAndSend(connection, instructions, lookups, send) {
 
 async function commandBuy(connection, send) {
   let before = await readState(connection);
-  if (before.record && BigInt(before.record.volumeRaw) >= FOUNDER_BUY_RAW) {
+  if (before.record && BigInt(before.record.volumeRaw) >= FOUNDER_MIN_BUY_RAW && before.sourceBase.amount > 0n) {
     console.log(JSON.stringify({ alreadyBoughtThroughWrapper: true, state: publicState(before) }, null, 2));
     return;
   }
   if (before.sourceBase.amount > 0n) throw new Error("launch wallet already holds XCNDL without the expected founder game record");
   await waitUntilOpen(before.config);
   before = await readState(connection);
-  const cost = await founderCost(connection);
-  if (before.sourceQuote.amount < cost.maximum) throw new Error(`launch wallet has ${ui(before.sourceQuote.amount, 8)} TSLAx, needs ${ui(cost.maximum, 8)}`);
+  const plan = await affordableFounderPlan(connection, before.sourceQuote.amount);
+  if (before.sourceQuote.amount < plan.maximum) throw new Error(`launch wallet has ${ui(before.sourceQuote.amount, 8)} TSLAx, needs ${ui(plan.maximum, 8)}`);
   const a = before.addresses;
   const pumpBuy = await PUMP_SDK.getBuyV2InstructionRaw({
     user: DEPLOYER,
     mint: MINT,
-    creator: cost.bondingCurve.creator,
-    amount: new BN(FOUNDER_BUY_RAW.toString()),
-    quoteAmount: new BN(cost.maximum.toString()),
-    feeRecipient: cost.global.feeRecipient,
+    creator: plan.bondingCurve.creator,
+    amount: new BN(plan.amountRaw.toString()),
+    quoteAmount: new BN(plan.maximum.toString()),
+    feeRecipient: plan.global.feeRecipient,
     buybackFeeRecipient: PUMP_BUYBACK_FEE_RECIPIENT,
     tokenProgram: TOKEN_2022_PROGRAM_ID,
     quoteMint: TSLAX_MINT,
@@ -401,25 +434,28 @@ async function commandBuy(connection, send) {
     ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 1000 }),
     wrapper,
   ], [altResult.value], send);
-  console.log(JSON.stringify({ action: "buy", sent: false, amountRaw: FOUNDER_BUY_RAW.toString(), maxTslax: ui(cost.maximum, 8), transaction: result }, null, 2));
+  console.log(JSON.stringify({ action: "buy", sent: false, amountRaw: plan.amountRaw.toString(), amountXcndl: ui(plan.amountRaw, 6), maxTslax: ui(plan.maximum, 8), transaction: result }, null, 2));
   if (!send) return;
   const after = await readState(connection);
-  if (!after.record || BigInt(after.record.volumeRaw) !== FOUNDER_BUY_RAW || after.record.strikes !== "1" || after.record.score !== "1") {
-    throw new Error("founder record readback does not prove exactly one 5M wrapper rung");
+  if (!after.record || BigInt(after.record.volumeRaw) !== plan.amountRaw || after.record.strikes !== "1" || after.record.score !== "1") {
+    throw new Error("founder record readback does not prove exactly one dynamic wrapper rung");
   }
-  if (after.sourceBase.amount < FOUNDER_BUY_RAW) throw new Error("founder XCNDL balance readback is below 5M");
-  saveReceipt({ founderBuy: { at: new Date().toISOString(), signature: result.signature, maxTslaxRaw: cost.maximum.toString(), after: publicState(after) } });
+  if (after.sourceBase.amount < plan.amountRaw) throw new Error("founder XCNDL balance readback is below the confirmed purchase");
+  saveReceipt({ founderBuy: { at: new Date().toISOString(), signature: result.signature, amountRaw: plan.amountRaw.toString(), maxTslaxRaw: plan.maximum.toString(), after: publicState(after) } });
   console.log(JSON.stringify({ sent: true, signature: result.signature, after: publicState(after) }, null, 2));
 }
 
 async function commandTransfer(connection, send) {
   const before = await readState(connection);
-  if (before.semirBase.amount >= FOUNDER_BUY_RAW && before.sourceBase.amount < FOUNDER_BUY_RAW) {
+  const receipt = fs.existsSync(RECEIPT_PATH) ? JSON.parse(fs.readFileSync(RECEIPT_PATH, "utf8")) : {};
+  const purchasedRaw = BigInt(receipt.founderBuy?.amountRaw || "0");
+  if (purchasedRaw < FOUNDER_MIN_BUY_RAW) throw new Error("founder buy receipt is missing or below the game minimum");
+  if (before.semirBase.amount >= purchasedRaw && before.sourceBase.amount < purchasedRaw) {
     console.log(JSON.stringify({ alreadyTransferred: true, state: publicState(before) }, null, 2));
     return;
   }
-  if (!before.record || BigInt(before.record.volumeRaw) !== FOUNDER_BUY_RAW) throw new Error("founder wrapper proof is absent or not exactly 5M");
-  if (before.sourceBase.amount < FOUNDER_BUY_RAW) throw new Error("launch wallet has less than 5M XCNDL to transfer");
+  if (!before.record || BigInt(before.record.volumeRaw) !== purchasedRaw) throw new Error("founder wrapper proof does not match the recorded purchase");
+  if (before.sourceBase.amount < purchasedRaw) throw new Error("launch wallet has less XCNDL than the recorded purchase");
   const instructions = [
     createAssociatedTokenAccountIdempotentInstruction(DEPLOYER, before.semirBase.ata, SEMIR, MINT, TOKEN_2022_PROGRAM_ID),
     createTransferCheckedInstruction(
@@ -427,17 +463,17 @@ async function commandTransfer(connection, send) {
       MINT,
       before.semirBase.ata,
       DEPLOYER,
-      FOUNDER_BUY_RAW,
+      purchasedRaw,
       before.mintDecimals,
       [],
       TOKEN_2022_PROGRAM_ID
     ),
   ];
   const result = await buildAndSend(connection, instructions, [], send);
-  console.log(JSON.stringify({ action: "transfer", sent: false, amountRaw: FOUNDER_BUY_RAW.toString(), to: SEMIR.toBase58(), transaction: result }, null, 2));
+  console.log(JSON.stringify({ action: "transfer", sent: false, amountRaw: purchasedRaw.toString(), amountXcndl: ui(purchasedRaw, 6), to: SEMIR.toBase58(), transaction: result }, null, 2));
   if (!send) return;
   const after = await readState(connection);
-  if (after.semirBase.amount < before.semirBase.amount + FOUNDER_BUY_RAW) throw new Error("Semir XCNDL readback did not increase by 5M");
+  if (after.semirBase.amount < before.semirBase.amount + purchasedRaw) throw new Error("Semir XCNDL readback did not increase by the recorded purchase");
   saveReceipt({ founderTransfer: { at: new Date().toISOString(), signature: result.signature, after: publicState(after) } });
   console.log(JSON.stringify({ sent: true, signature: result.signature, after: publicState(after) }, null, 2));
 }
@@ -461,7 +497,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  FOUNDER_BUY_RAW,
+  FOUNDER_MIN_BUY_RAW,
   INPUT_LAMPORTS,
   MIN_SOL_RESERVE_LAMPORTS,
   REQUIRED_CONFIRM,

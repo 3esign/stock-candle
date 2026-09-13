@@ -794,7 +794,7 @@ async function init() {
   bindEvents();
   startCanvas();
   try {
-    app.manifest = await fetchJson("manifest.json", { cache: "no-store" });
+    app.manifest = await fetchJson("manifest.json?v=launch-342877d", { cache: "no-store" });
     app.rpcUrl = (app.manifest.rpcUrls || [])[0] || "";
     renderManifest();
     renderEntry();

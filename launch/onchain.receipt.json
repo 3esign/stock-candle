@@ -59,5 +59,120 @@
     "freezeSignature": "2sx39Fw4UQP3R5cB37ZtbyNPSCsQLLA4uc8cHaaf2oLK3d3bYRRSzRLD3pV5kPAacHmZyErzCNbZ9DAt6acZrXLw",
     "founderPacketBytes": 551,
     "authority": null
+  },
+  "founderSwap": {
+    "at": "2026-09-13T14:11:42.327Z",
+    "signature": "46Sq8rzo7Pi2vW8DXjYAQJJyMMeJWtcLihxhv9TicweWLkv96ay4Tu9xpenpp68qa3sVBDD1C9ezzNekZS6VzV5n",
+    "plan": {
+      "inputSol": "0.22",
+      "minimumOutputTslax": "0.05999474",
+      "postMinimumTslax": "0.06248299",
+      "minimumGameBuyTslax": "0.0118325",
+      "priceImpactPct": "0.0036325672019942233655628311",
+      "route": [
+        "HumidiFi",
+        "Whirlpool"
+      ]
+    },
+    "after": {
+      "launchSol": "0.028710552",
+      "launchTslax": "0.06309062",
+      "launchXcndl": "0",
+      "semirXcndl": "0",
+      "config": {
+        "startTs": 1789308845,
+        "endTs": 1789309745,
+        "totalStrikes": "0",
+        "closed": false,
+        "leader": "11111111111111111111111111111111",
+        "leaderScore": "0",
+        "baseMint": "5CmZR4yHKwfTDL5y7PoMJ6kTR9LJBcsdXPBoY9tLT5sF",
+        "lastAwardedCurveBalance": "18446744073709551615"
+      },
+      "founderRecord": null,
+      "mintDecimals": 6,
+      "addresses": {
+        "config": "5LN2kPUJqgAbqbDALpi1EUq2CHx84UqPszBmbtc3Brp2",
+        "configBump": 255,
+        "pot": "6BztA9ESeDTWN5PsQmMXa3wUTT8wpvWswW6VcAYUTVLN",
+        "potBump": 255,
+        "record": "BM8VDDMpo9hPdQUwuYn8rxtNGUWYFSwegg44N2vbCyVh",
+        "recordBump": 255
+      }
+    }
+  },
+  "founderBuy": {
+    "at": "2026-09-13T14:14:11.663Z",
+    "signature": "2VCzL2CMtJrjoaPab59Vrn63kZfeJVxJosMfqBYt9Rg2zCLAKeQsEi8HV5iDBrKxa5gyw1RzGuxBQgGAM94A594f",
+    "amountRaw": "5514041162000",
+    "maxTslaxRaw": "6244709",
+    "after": {
+      "launchSol": "0.025215952",
+      "launchTslax": "0.00126182",
+      "launchXcndl": "5514041.162",
+      "semirXcndl": "0",
+      "config": {
+        "startTs": 1789308845,
+        "endTs": 1789309745,
+        "totalStrikes": "1",
+        "closed": false,
+        "leader": "ExBhtaQXzQvTYreqjy2E9ZdvoxJWrBEnwooD2ceGTFgE",
+        "leaderScore": "1",
+        "baseMint": "5CmZR4yHKwfTDL5y7PoMJ6kTR9LJBcsdXPBoY9tLT5sF",
+        "lastAwardedCurveBalance": "987039303431547"
+      },
+      "founderRecord": {
+        "wallet": "ExBhtaQXzQvTYreqjy2E9ZdvoxJWrBEnwooD2ceGTFgE",
+        "strikes": "1",
+        "volumeRaw": "5514041162000",
+        "lastSlot": "446723024",
+        "score": "1"
+      },
+      "mintDecimals": 6,
+      "addresses": {
+        "config": "5LN2kPUJqgAbqbDALpi1EUq2CHx84UqPszBmbtc3Brp2",
+        "configBump": 255,
+        "pot": "6BztA9ESeDTWN5PsQmMXa3wUTT8wpvWswW6VcAYUTVLN",
+        "potBump": 255,
+        "record": "BM8VDDMpo9hPdQUwuYn8rxtNGUWYFSwegg44N2vbCyVh",
+        "recordBump": 255
+      }
+    }
+  },
+  "founderTransfer": {
+    "at": "2026-09-13T14:14:25.599Z",
+    "signature": "58W4Ytof61LWa98fwnV3XHAYrgumDN8otYDm71m1jDafcLHm82XZKmK1RNr51WC7JuHiLWA3MtEYxq5XCKpVxouG",
+    "after": {
+      "launchSol": "0.023697112",
+      "launchTslax": "0.00126182",
+      "launchXcndl": "0",
+      "semirXcndl": "5514041.162",
+      "config": {
+        "startTs": 1789308845,
+        "endTs": 1789309745,
+        "totalStrikes": "1",
+        "closed": false,
+        "leader": "ExBhtaQXzQvTYreqjy2E9ZdvoxJWrBEnwooD2ceGTFgE",
+        "leaderScore": "1",
+        "baseMint": "5CmZR4yHKwfTDL5y7PoMJ6kTR9LJBcsdXPBoY9tLT5sF",
+        "lastAwardedCurveBalance": "987039303431547"
+      },
+      "founderRecord": {
+        "wallet": "ExBhtaQXzQvTYreqjy2E9ZdvoxJWrBEnwooD2ceGTFgE",
+        "strikes": "1",
+        "volumeRaw": "5514041162000",
+        "lastSlot": "446723024",
+        "score": "1"
+      },
+      "mintDecimals": 6,
+      "addresses": {
+        "config": "5LN2kPUJqgAbqbDALpi1EUq2CHx84UqPszBmbtc3Brp2",
+        "configBump": 255,
+        "pot": "6BztA9ESeDTWN5PsQmMXa3wUTT8wpvWswW6VcAYUTVLN",
+        "potBump": 255,
+        "record": "BM8VDDMpo9hPdQUwuYn8rxtNGUWYFSwegg44N2vbCyVh",
+        "recordBump": 255
+      }
+    }
   }
 }

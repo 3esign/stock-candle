@@ -49,3 +49,5 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T16:31:00+02:00 · Codex/Svemir · program upgrade authority trajno opozvan; readback pokazuje `authority:null`, isti SBF prefix i zero padding, fee-sharing admin revoked i ALT frozen · ok
 - 2026-09-13T16:33:00+02:00 · Codex/Svemir · finalni lokalni browser-origin QA sa immutable manifestom: desktop/mobile LIVE, nula overflowa, direct config/pot/Token-2022 prize read, Jupiter quote/swap CORS i builder measure prolaze · ok
 - 2026-09-13T15:58:00Z · Svemir · closed-race entry guards, static MiniSol settlement, retired builder URL; five suites, desktop/mobile and positive unsigned mainnet TSLAx claim simulation pass · ready to publish; no sends
+
+- 2026-09-13T16:05:29.233Z · Svemir · public closeout deployed 8a85dde and verified from the real HTTPS origin at desktop/mobile; browser claim simulation reaches a mock provider stop; no real wallet signature/send · delivered; claim awaits user

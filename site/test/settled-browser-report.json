@@ -1,0 +1,75 @@
+{
+  "at": "2026-09-13T16:03:45.731Z",
+  "siteUrl": "https://scandle.ratchetx.xyz/",
+  "viewports": [
+    {
+      "name": "desktop",
+      "state": {
+        "closed": true,
+        "prize": "11261659",
+        "winner": "ExBhtaQXzQvTYreqjy2E9ZdvoxJWrBEnwooD2ceGTFgE"
+      },
+      "metrics": {
+        "width": 1440,
+        "scrollWidth": 1425,
+        "overflow": [],
+        "launch": "RACE CLOSED",
+        "tradeDisabled": true,
+        "quoteDisabled": true,
+        "claimDisabled": true,
+        "colored": 3707
+      },
+      "blocked": {
+        "results": [
+          "This race is closed or not open. No conversion or game purchase is available.",
+          "This race is closed or not open. No conversion or game purchase is available.",
+          "This race is closed or not open. No conversion or game purchase is available.",
+          "This race is closed or not open. No conversion or game purchase is available.",
+          "This race is closed or not open. No conversion or game purchase is available."
+        ],
+        "tradeDisabled": true,
+        "quoteDisabled": true,
+        "claimDisabled": false
+      }
+    },
+    {
+      "name": "mobile",
+      "state": {
+        "closed": true,
+        "prize": "11261659",
+        "winner": "ExBhtaQXzQvTYreqjy2E9ZdvoxJWrBEnwooD2ceGTFgE"
+      },
+      "metrics": {
+        "width": 390,
+        "scrollWidth": 390,
+        "overflow": [],
+        "launch": "RACE CLOSED",
+        "tradeDisabled": true,
+        "quoteDisabled": true,
+        "claimDisabled": true,
+        "colored": 1601
+      },
+      "blocked": {
+        "results": [
+          "This race is closed or not open. No conversion or game purchase is available.",
+          "This race is closed or not open. No conversion or game purchase is available.",
+          "This race is closed or not open. No conversion or game purchase is available.",
+          "This race is closed or not open. No conversion or game purchase is available.",
+          "This race is closed or not open. No conversion or game purchase is available."
+        ],
+        "tradeDisabled": true,
+        "quoteDisabled": true,
+        "claimDisabled": false
+      }
+    }
+  ],
+  "retiredBuilderRequests": [],
+  "browserSettlement": {
+    "prizeRaw": "11261659",
+    "mockRequests": 1,
+    "requestMethod": "signAndSendTransaction",
+    "status": "QA_STOP_BEFORE_REAL_WALLET"
+  },
+  "sent": false,
+  "walletSignatureRequested": false
+}

@@ -77,7 +77,7 @@ assert.match(rules, /Frozen Launch Values/);
 assert.match(rules, /repeatable/i);
 assert.match(publicRules, /The ladder<br>only goes up/);
 assert.match(publicRules, /Frozen launch rules/);
-assert.strictEqual(read("CNAME").trim(), "stockcandle.ratchetx.xyz");
+assert.strictEqual(read("CNAME").trim(), "scandle.ratchetx.xyz");
 
 for (const file of ["index.html", "rules.html", "styles.css", "app.js", "manifest.json", "serve.js", "assets/xcndl-token.svg"]) {
   assert.ok(Buffer.from(read(file), "utf8").every((byte) => byte < 128), file + " must remain ASCII");

@@ -38,7 +38,7 @@
 # Odluke
 
 - Javno ime je STOCK CANDLE, simbol `$XCNDL`, mehanika Candle Ladder, a quote asset TSLAx.
-- Predloženi domen je `stockcandle.ratchetx.xyz`.
+- Konacni domen je `scandle.ratchetx.xyz`; Semir dodaje DNS tek kada su X i Telegram URL spremni.
 - Primarni ulaz je SOL, sekundarni je direktni TSLAx; oba potpisuje igračev wallet.
 - Primarni SOL UX prvo pokušava jednu atomsku transakciju, a automatski prelazi na dva potpisa ako trenutna ruta ne stane ili ne prođe simulaciju.
 - Vizuelni mod je generativni Canvas 2D chart kao merdevine, uz semantički DOM za pravila i stanje.

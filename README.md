@@ -11,7 +11,7 @@ STOCK CANDLE is a fully on-chain Solana launch race paired with TSLAx: every ver
 | Game | Candle Ladder |
 | Quote asset | TSLAx on Solana |
 | Easy entry | SOL to TSLAx inside the site |
-| Proposed site | `stockcandle.ratchetx.xyz` |
+| Site | `scandle.ratchetx.xyz` |
 
 STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Tesla product, or an offer of equity.
 

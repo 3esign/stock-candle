@@ -18,3 +18,4 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T13:52:00+02:00 · Codex/Svemir · launch ekonomija zamrznuta na 15 min / 1M minimum i korak / 0.001 SOL uspesan rung / 0.05 SOL seed / 66.33% TSLAx fee share ka potu · ok
 - 2026-09-13T13:57:00+02:00 · Codex/Svemir · prvi viewport, rules, metadata i X draft uskladjeni sa SOL+TSLAx nagradom; dodat direktan RPC readback i permissionless settlement UI ugovor · ok
 - 2026-09-13T13:58:00+02:00 · Codex/Svemir · static, builder i browser QA ponovo zeleni; desktop/mobilni overflow 0, pre-launch fail-closed, live Jupiter quote radi · ok
+- 2026-09-13T14:02:00+02:00 · Codex/Svemir · Semir izabrao konacni javni domen `scandle.ratchetx.xyz`; CNAME, metadata, OG i X copy uskladjeni pre DNS-a · ok

@@ -26,7 +26,7 @@ STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Te
 | Prize path | Full SOL pot closes to the leader; full TSLAx pot balance and later fee arrivals remain claimable by that same winner |
 | Public product | This project owns the site, public rules, metadata, launch copy and QA |
 | Mainnet launch | Not deployed; no `$XCNDL` mint or program CA exists yet |
-| Social metadata | Telegram is frozen at `https://t.me/chetx`; final X post URL remains required |
+| Social metadata | Telegram is `https://t.me/chetx`; launch post is `https://x.com/SonyxEth/status/2099118851627602318` |
 
 ## Build Order
 
@@ -34,8 +34,10 @@ STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Te
 2. Build and test the mobile-first site in pre-launch mode.
 3. Implement the final-account builder behind the prepared browser contract.
 4. Re-run live Pump, TSLAx extension, Jupiter-route, combined simulation and packet-size gates.
-5. Telegram and DNS are set; publish the final X post after custom-domain HTTPS is valid.
+5. Telegram, DNS and the launch X post are set; finish custom-domain HTTPS verification.
 6. Freeze metadata, state exact funding requirement, rehearse, then ask for explicit deploy approval.
+
+The disclosed founder plan is a 5,000,000 XCNDL purchase through the same game path, followed by transfer of those tokens to Semir's public wallet. A single 5M purchase still earns only one rung.
 
 ## Honest Verdict
 
@@ -43,4 +45,4 @@ Verified: the core Candle Ladder program and local adversarial tests, current TS
 
 Concluded: the user should be able to enter with SOL without separately discovering where TSLAx trades. The conversion settles on-chain and remains wallet-signed; the route builder is replaceable infrastructure, not game authority. A sampled combined packet fits one signature, but its public feature flag remains off until final-mint runtime proof.
 
-Not done: final X metadata, `$XCNDL` creation, program deploy, config initialization, launch funding, or any irreversible transaction. DNS is live; GitHub Pages custom-domain HTTPS is still provisioning.
+Not done: `$XCNDL` creation, program deploy, config initialization, launch funding, or any irreversible transaction. DNS and social metadata are live; GitHub Pages custom-domain HTTPS is still provisioning.

@@ -52,3 +52,5 @@
 - Pobednik dobija ceo SOL pot i sav TSLAx u pot ATA; 66.33% Pump creator-fee udela ide pot PDA-u, 33.67% creator walletu, uz planirano trajno zakljucavanje fee-sharing konfiguracije.
 - Sajt, javni materijali i builder ugovor zavrsavaju se pre bilo kog deploya; pravi XCNDL CA se objavljuje poslednji.
 - Telegram launch URL je `https://t.me/chetx`; DNS CNAME za `scandle.ratchetx.xyz` je 2026-09-13 javno procitan kao `3esign.github.io` sa TTL 600.
+- Finalni launch post je `https://x.com/SonyxEth/status/2099118851627602318`; sajt koristi isti URL kao jedini javni X izvor.
+- Founder plan je 5,000,000 XCNDL kroz isti wrapper, zatim transfer tokena na `HXFDa...C1HvM`; jedna velika kupovina po programu osvaja samo jedan rung.

@@ -17,7 +17,8 @@ const PROGRAM_ELF = "C:/Svemir/skills/svemir-solana/lab/candle-fuse/target/deplo
 const TOKEN_IMAGE = path.resolve(__dirname, "..", "site", "assets", "xcndl-token.png");
 const PROGRAM_MAX_LEN = 30720;
 const POT_SEED_LAMPORTS = 50000000;
-const FOUNDER_ENTRY_SOL_LAMPORTS = 60000000;
+const FOUNDER_ENTRY_SOL_LAMPORTS = 220000000;
+const FOUNDER_TARGET_XCNDL_UI = 5000000;
 const OPERATING_BUFFER_LAMPORTS = 20000000;
 
 async function fetchJson(url, options = {}) {
@@ -143,6 +144,7 @@ async function main() {
     historicalSamePathCosts: { createHistory, feeShareHistory },
     founderEntryQuote: founderQuote,
     budget: {
+      founderTargetXcndlUi: FOUNDER_TARGET_XCNDL_UI,
       potSeedSol: POT_SEED_LAMPORTS / 1e9,
       founderEntrySol: FOUNDER_ENTRY_SOL_LAMPORTS / 1e9,
       operatingBufferSol: OPERATING_BUFFER_LAMPORTS / 1e9,

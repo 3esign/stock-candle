@@ -25,3 +25,5 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T14:19:00+02:00 · Codex/Svemir · javni DNS potvrdjen, HTTP manifest radi, ali GitHub Pages HTTPS jos vraca pogresan sertifikat; X objava zadrzana do ispravnog TLS-a · blocked-external
 - 2026-09-13T14:44:00+02:00 · Codex/Svemir · zatvoren prefunded-PDA DoS za config i player record; novi SBF 30,648 B / `22EE4F12...29A6B`, WSL LiteSVM 11/11 · ok
 - 2026-09-13T14:45:00+02:00 · Codex/Svemir · ponovljeni static i packet atomi: legacy 1,166 B; najnoviji SOL ulaz 1,039 B sa 193 B rezerve; nista potpisano ni poslato · ok
+- 2026-09-13T14:54:00+02:00 · Codex/Svemir · finalni X launch post `2099118851627602318` zamrznut u manifestu i social metadata; Telegram ostaje `t.me/chetx` · ok
+- 2026-09-13T14:56:00+02:00 · Codex/Svemir · founder cilj promenjen na javnih 5M XCNDL; sveza 0.21 SOL ruta vec pokriva pocetni 5M max, budzet koristi 0.22 SOL i jedan rung po transakciji · ok

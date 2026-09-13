@@ -34,6 +34,7 @@
   "jupiterQuoteApi": "https://lite-api.jup.ag/swap/v1/quote",
   "jupiterSwapApi": "https://lite-api.jup.ag/swap/v1/swap",
   "rpcUrls": [
+    "https://solana-rpc.publicnode.com",
     "https://api.mainnet-beta.solana.com"
   ],
   "xUrl": "https://x.com/SonyxEth/status/2099118851627602318",

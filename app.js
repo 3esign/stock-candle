@@ -98,7 +98,8 @@ async function fetchJson(url, options = {}) {
     throw new Error("Service returned an unreadable response.");
   }
   if (!response.ok || body.error) {
-    throw new Error(body.error || body.errorMessage || "Request failed with HTTP " + response.status + ".");
+    const rpcMessage = body.error && typeof body.error === "object" ? body.error.message : body.error;
+    throw new Error(rpcMessage || body.errorMessage || "Request failed with HTTP " + response.status + ".");
   }
   return body;
 }
@@ -794,7 +795,7 @@ async function init() {
   bindEvents();
   startCanvas();
   try {
-    app.manifest = await fetchJson("manifest.json?v=launch-342877d", { cache: "no-store" });
+    app.manifest = await fetchJson("manifest.json?v=launch-live-v2", { cache: "no-store" });
     app.rpcUrl = (app.manifest.rpcUrls || [])[0] || "";
     renderManifest();
     renderEntry();

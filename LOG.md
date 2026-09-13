@@ -13,3 +13,8 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T10:22:00+02:00 · Codex/Svemir · ispravljen player UX: TSLAx je maksimalni budžet, builder automatski računa najmanji `$XCNDL` buy koji prelazi sledeći on-chain rung · ok
 - 2026-09-13T13:30:00+02:00 · Codex/Svemir · dodat smart-entry browser ugovor: jedan atomski SOL->TSLAx->XCNDL potpis iza final-runtime flaga, sa automatskim fallbackom na dve potvrde; dodat testiran rung-pricing core · ok
 - 2026-09-13T13:38:00+02:00 · Codex/Svemir · ponovljeni static, builder, desktop/mobile/CDP i WSL LiteSVM testovi; 0 overflow-a, realni Jupiter quote, 9/9 programskih testova · ok
+- 2026-09-13T13:45:00+02:00 · Codex/Svemir · CANDLE program prosiren quote-mint vezivanjem i permissionless ponovljivom TSLAx isplatom snimljenom pobedniku; WSL LiteSVM ponovo 9/9 · ok
+- 2026-09-13T13:49:00+02:00 · Codex/Svemir · live read-only Pump replay izmerio pocetni 1M XCNDL rung na 0.01101093 TSLAx, odnosno 0.01112104 sa 1% zastitom; nista poslato · ok
+- 2026-09-13T13:52:00+02:00 · Codex/Svemir · launch ekonomija zamrznuta na 15 min / 1M minimum i korak / 0.001 SOL uspesan rung / 0.05 SOL seed / 66.33% TSLAx fee share ka potu · ok
+- 2026-09-13T13:57:00+02:00 · Codex/Svemir · prvi viewport, rules, metadata i X draft uskladjeni sa SOL+TSLAx nagradom; dodat direktan RPC readback i permissionless settlement UI ugovor · ok
+- 2026-09-13T13:58:00+02:00 · Codex/Svemir · static, builder i browser QA ponovo zeleni; desktop/mobilni overflow 0, pre-launch fail-closed, live Jupiter quote radi · ok

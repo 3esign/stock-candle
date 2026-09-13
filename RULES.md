@@ -1,10 +1,10 @@
 # STOCK CANDLE - Public Rules Draft
 
-Status: pre-launch. Values marked `TBD` are not launch promises.
+Status: pre-launch. The economics below are frozen for the deployment rehearsal; no on-chain deployment exists yet.
 
 ## The Game In One Sentence
 
-Buy `$XCNDL` with TSLAx through STOCK CANDLE; if the verified buy pushes the Pump curve across the next locked candle level, your wallet earns one rung, and the wallet with the most rungs receives the live SOL pot after the window.
+Start with SOL or TSLAx and buy `$XCNDL`; if the verified buy pushes the Pump curve across the next locked 1,000,000-token level, your wallet earns one rung, and the wallet with the most rungs after 15 minutes receives the SOL pot and TSLAx fee prize.
 
 ## Entry Paths
 
@@ -26,18 +26,23 @@ Buy `$XCNDL` with TSLAx through STOCK CANDLE; if the verified buy pushes the Pum
 - Ties favor the wallet that reached the tied score first.
 - Anyone may call settlement after the end time.
 - The full stored lamport pot is paid once to the on-chain leader; failed settlement rolls back.
+- The recorded winner may permissionlessly claim the full TSLAx balance of the pot token account after close.
+- That TSLAx claim is intentionally repeatable: creator-fee shares that arrive after close can only be swept to the same recorded winner.
+- An empty TSLAx claim and a claim by any other wallet fail atomically.
 
-## Values To Freeze Before Deploy
+## Frozen Launch Values
 
-| Parameter | Draft |
+| Parameter | Value |
 |---|---:|
-| Window | `TBD` |
-| Minimum `$XCNDL` buy | `TBD` after final curve replay |
-| Candle step | `TBD` after final supply/curve replay |
-| Entry fee to SOL pot | `TBD` after current cost/economics measurement |
+| Window | `15 minutes` from on-chain initialization |
+| Minimum `$XCNDL` buy | `1,000,000 XCNDL` |
+| Candle step | `1,000,000 XCNDL` |
+| Successful-rung fee to SOL pot | `0.001 SOL` |
+| Initial SOL pot | `0.05 SOL` |
 | Winner | Most rungs; first wallet wins a tie |
-| Payout | 100% of the on-chain game pot |
+| Payout | 100% of the SOL pot plus 100% of TSLAx held by the pot token account |
 | Pump creator mode | Regular creator fee mode; no holder-reward promise |
+| Creator fee sharing | `66.33%` pot PDA / `33.67%` creator wallet, locked at launch |
 
 ## Trust Boundary
 

@@ -1,6 +1,6 @@
 # STOCK CANDLE
 
-STOCK CANDLE is a fully on-chain Solana launch race paired with TSLAx: every verified `$XCNDL` buy that crosses the next irreversible candle level earns one rung, and the leading wallet receives the live SOL pot when the window closes.
+STOCK CANDLE is a fully on-chain Solana launch race paired with TSLAx: every verified `$XCNDL` buy that crosses the next irreversible 1,000,000-token level earns one rung, and the leading wallet receives the SOL pot plus TSLAx creator-fee prize when the 15-minute window closes.
 
 ## Identity
 
@@ -23,13 +23,14 @@ STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Te
 | Local SBF proof | 9/9 LiteSVM tests pass with real Token-2022 movement and rollback checks |
 | Pump proof | Current `buy_v2` account shape and a real STOCX trade replay are covered |
 | SOL entry | ExactIn Jupiter route is integrated; one signature is preferred when the combined route fits, with a two-approval fallback |
+| Prize path | Full SOL pot closes to the leader; full TSLAx pot balance and later fee arrivals remain claimable by that same winner |
 | Public product | This project owns the site, public rules, metadata, launch copy and QA |
 | Mainnet launch | Not deployed; no `$XCNDL` mint or program CA exists yet |
 | Social metadata | Final X post and Telegram URL are required before metadata is frozen |
 
 ## Build Order
 
-1. Freeze public rules and display units.
+1. Freeze public rules and display units. Done locally: 15 minutes, 1M XCNDL step/minimum, 0.001 SOL awarded-rung fee and 0.05 SOL seed.
 2. Build and test the mobile-first site in pre-launch mode.
 3. Implement the final-account builder behind the prepared browser contract.
 4. Re-run live Pump, TSLAx extension, Jupiter-route, combined simulation and packet-size gates.

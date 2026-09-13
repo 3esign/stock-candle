@@ -128,11 +128,12 @@ h1 {
 }
 .lead { max-width: 590px; margin: 28px 0; font-size: 22px; }
 .primary-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.entry-note { max-width: 560px; margin: 16px 0 0; color: var(--muted); font-size: 13px; }
 .identity-line {
   margin: 40px 0 0;
   padding-top: 18px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border-top: 1px solid var(--line);
 }
 .identity-line div { padding-right: 10px; }
@@ -257,6 +258,8 @@ h1 {
 .steps p { margin-bottom: 0; }
 
 .state-band { display: grid; grid-template-columns: minmax(260px, 0.75fr) minmax(480px, 1.25fr); gap: clamp(40px, 8vw, 120px); }
+.state-actions { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 9px; }
+.state-status { max-width: 640px; min-height: 38px; margin: 12px 0 0; color: var(--muted); font-size: 13px; }
 .state-grid { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--ink); border-left: 1px solid var(--ink); }
 .state-grid div { min-height: 120px; padding: 18px; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .state-grid dt { color: var(--muted); font: 700 10px/1 monospace; }
@@ -314,6 +317,7 @@ footer { padding: 34px clamp(18px, 5vw, 72px); display: grid; grid-template-colu
   h1 { font-size: 58px; }
   .lead { margin: 22px 0; font-size: 18px; }
   .identity-line { margin-top: 28px; }
+  .identity-line { grid-template-columns: 1fr 1fr; row-gap: 16px; }
   .identity-line dd { font-size: 13px; }
   .market-surface { padding: 28px 18px 30px; }
   .chart-head { align-items: flex-end; }

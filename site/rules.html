@@ -19,7 +19,7 @@
   <main class="rules-document">
     <p class="eyebrow">PUBLIC RULES &middot; PRE-LAUNCH</p>
     <h1>The ladder<br>only goes up.</h1>
-    <p class="document-lead">Buy <strong>$XCNDL</strong> with TSLAx. If the verified buy crosses the next locked candle level, your wallet earns one rung. The wallet with the most rungs receives the live SOL pot after close.</p>
+    <p class="document-lead">Start with SOL or TSLAx and buy <strong>$XCNDL</strong>. If the verified buy crosses the next locked 1,000,000-token level, your wallet earns one rung. Most rungs after 15 minutes wins the SOL pot and TSLAx fee prize.</p>
 
     <section>
       <h2>Enter</h2>
@@ -38,11 +38,19 @@
     </section>
     <section>
       <h2>Settle</h2>
-      <p>After the frozen end time, anyone may invoke settlement. The full stored lamport pot is paid once to the on-chain leader. A failed settlement rolls back.</p>
+      <p>After 15 minutes, anyone may invoke settlement. The full stored lamport pot is paid once to the on-chain leader. The same winner can then permissionlessly claim the entire TSLAx balance held by the pot token account. If creator-fee shares arrive later, another claim sends them to that already-recorded winner. Failed or empty claims roll back.</p>
     </section>
     <section>
-      <h2>Still to freeze</h2>
-      <p>The window, minimum buy, candle step and entry fee remain TBD until final curve replay and economic measurement. They are not launch promises yet.</p>
+      <h2>Frozen launch rules</h2>
+      <ul>
+        <li>Window: 15 minutes from on-chain initialization.</li>
+        <li>Minimum buy: 1,000,000 XCNDL.</li>
+        <li>Candle step: 1,000,000 XCNDL.</li>
+        <li>Successful-rung fee: 0.001 SOL, added to the SOL pot.</li>
+        <li>Initial SOL pot: 0.05 SOL.</li>
+        <li>Tie: the wallet that reached the tied score first remains ahead.</li>
+        <li>Creator fee sharing: 66.33% to the game pot PDA and 33.67% to the creator wallet, locked through Pump fee sharing at launch.</li>
+      </ul>
     </section>
     <section>
       <h2>Risk and identity</h2>

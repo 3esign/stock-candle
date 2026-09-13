@@ -69,6 +69,7 @@ const POT_SEED_LAMPORTS = 50_000_000n;
 const FOUNDER_BUY_RAW = 5_000_000_000_000n;
 const MAX_U64 = (1n << 64n) - 1n;
 const MAX_PACKET_BYTES = 1232;
+const EXPECTED_GAME_ALT_ADDRESS_COUNT = 21;
 const CONFIRMATIONS = {
   "deploy-program": "STOCK_CANDLE_PROGRAM_MAINNET",
   init: "STOCK_CANDLE_INIT_MAINNET",
@@ -642,8 +643,8 @@ async function commandAlt(connection) {
   if (!configIsFinal(status.game.configState, a)) throw new Error("game config is not initialized");
   if (!status.feeSharing.final) throw new Error("fee sharing is not final and locked");
   if (status.gameAlt?.exists) {
-    if (status.gameAlt.authority !== null || status.gameAlt.addressCount !== 22) {
-      throw new Error("existing game ALT is not the expected frozen 22-address table");
+    if (status.gameAlt.authority !== null || status.gameAlt.addressCount !== EXPECTED_GAME_ALT_ADDRESS_COUNT) {
+      throw new Error(`existing game ALT is not the expected frozen ${EXPECTED_GAME_ALT_ADDRESS_COUNT}-address table`);
     }
     console.log(JSON.stringify({ alreadyFinal: true, gameAlt: status.gameAlt }, null, 2));
     return;
@@ -651,7 +652,9 @@ async function commandAlt(connection) {
 
   const { wrapper, pumpBuy, record } = await buildFounderWrapper(connection, a);
   const lookupAddresses = commonLookupAddresses(wrapper, pumpBuy, record);
-  if (lookupAddresses.length !== 22) throw new Error(`expected 22 static game addresses, found ${lookupAddresses.length}`);
+  if (lookupAddresses.length !== EXPECTED_GAME_ALT_ADDRESS_COUNT) {
+    throw new Error(`expected ${EXPECTED_GAME_ALT_ADDRESS_COUNT} static game addresses, found ${lookupAddresses.length}`);
+  }
   const recentSlot = await connection.getSlot("finalized");
   const [createIx, altAddress] = AddressLookupTableProgram.createLookupTable({
     authority: DEPLOYER,
@@ -726,7 +729,7 @@ async function commandLockProgram(connection) {
   assertProgramReady(status);
   if (!configIsFinal(status.game.configState, a)) throw new Error("game config is not final");
   if (!status.feeSharing.final) throw new Error("fee sharing is not final");
-  if (!status.gameAlt?.exists || status.gameAlt.authority !== null || status.gameAlt.addressCount !== 22) {
+  if (!status.gameAlt?.exists || status.gameAlt.authority !== null || status.gameAlt.addressCount !== EXPECTED_GAME_ALT_ADDRESS_COUNT) {
     throw new Error("game ALT is not final and frozen");
   }
   const receipt = fs.existsSync(RECEIPT_PATH)
@@ -790,6 +793,7 @@ module.exports = {
   CONFIG_LEN,
   DEPLOYER,
   ENTRY_FEE_LAMPORTS,
+  EXPECTED_GAME_ALT_ADDRESS_COUNT,
   MINT,
   MIN_BUY_RAW,
   POT_SEED_LAMPORTS,

@@ -87,7 +87,7 @@ async function main() {
     config: 380,
     founderPlayerRecord: 64,
     feeSharingConfig: 1024,
-    gameLookupTable: 56 + (22 * 32),
+    gameLookupTable: 56 + (21 * 32),
     founderBaseTokenAta: 165,
   };
   const rentEntries = await Promise.all(Object.entries(sizes).map(async ([name, bytes]) => {

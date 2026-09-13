@@ -10,6 +10,7 @@
 - Prvi XCNDL create rehearsal je vratio `Invalid arguments` pre RPC simulacije. Uzrok: instalirani `web3.js` legacy `simulateTransaction(Transaction)` overload tumaci drugi objekat kao signer listu, ne kao config. Lek: za vec potpisanu legacy transakciju koristi isti jednorecni poziv kao provereni STOCX launcher.
 - Prvi STOCK CANDLE quick tunnel se povezao ali javno vracao Cloudflare 404. Uzrok iz startup loga: `cloudflared tunnel --url` je ucitao postojeci korisnicki `config.yml` i credential-file iako je trebalo da bude accountless quick tunnel. Lek: launch quick tunnel uvek dobija eksplicitan minimalni projektni `--config`.
 - Eksplicitan `builder/cloudflared-quick.yml` uklonio je inherited tunnel profil: novi javni health radi, objavljuje `signs:false` i `sends:false`, a trade endpoint ostaje 503 dok finalni manifest nije on-chain potvrdjen.
+- Prvi finalni ALT pokušaj je bez slanja stao na očekivanih 22 naspram 21 jedinstvene statičke adrese. Uzrok: modelirani prelaunch Pump account shape imao je jednu statičku adresu više od deduplikovanog živog XCNDL `buy_v2`; lek je zamrznuti i testirati stvarni final-mint skup od 21 adrese, ne raniji modelirani broj.
 
 # Iskustva
 
@@ -26,6 +27,7 @@
 - DNS CNAME moze javno proraditi pre GitHub Pages custom-domain TLS sertifikata. Launch link se ne objavljuje dok direktan HTTPS fetch ne vrati 200 sa ispravnim host sertifikatom; HTTP 200 sam nije dovoljan dokaz spremnosti.
 - Kada validan GitHub Pages CNAME ostane `HTTPS eligible` ali sertifikat ne nastane posle standardnog cekanja, zvanicni remove/re-add custom-domain postupak je ovde odmah pokrenuo novi CNAME commit i odobren sertifikat; posle toga je `https_enforced=true` i direktan host fetch 200.
 - Builder manifest gate mora proveravati zamrznutu ekonomiju, X/Telegram URL, artefact hash i aktivan zamrznut ALT, ne samo prisustvo adresa i `deployed=true`.
+- Finalni XCNDL `buy_v2` daje 21 jedinstvenu statičku ALT adresu posle uklanjanja signer/dinamičkih/programskih adresa; vrednost je potvrđena pre ALT kreiranja i postaje deo authority-lock readbacka.
 - Sistem-owned PDA koji je napadac unapred napunio jednim lamportom ne sme ici kroz obican `CreateAccount`. Program dopunjava rentu, radi signed `Allocate` i `Assign`; posebni LiteSVM testovi sada pokrivaju i config i player-record PDA.
 
 # Izvori

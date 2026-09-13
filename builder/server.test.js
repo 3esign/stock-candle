@@ -81,7 +81,7 @@ async function main() {
     launchParameters: { ...readyManifest.launchParameters, windowSeconds: 901 },
   }), false);
 
-  assert.strictEqual(publicManifest().configured, false);
+  assert.strictEqual(publicManifest().configured, true);
   const server = createServer();
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
@@ -90,20 +90,16 @@ async function main() {
     const health = await fetch(`http://127.0.0.1:${port}/health`);
     const healthBody = await health.json();
     assert.strictEqual(health.status, 200);
-    assert.strictEqual(healthBody.configured, false);
+    assert.strictEqual(healthBody.configured, true);
     assert.strictEqual(healthBody.signs, false);
     assert.strictEqual(healthBody.sends, false);
-
-    const measure = await fetch(`http://127.0.0.1:${port}/api/stock-candle/measure?user=HXFDaHyZ3i477z1BakiTWZg9UQN8rcreruuv9ifC1HvM&maxQuoteAmountRaw=1500000`);
-    const measureBody = await measure.json();
-    assert.strictEqual(measure.status, 503);
-    assert.strictEqual(measureBody.error, "launch_manifest_not_configured");
+    assert.strictEqual(healthBody.program, publicManifest().manifest.programId);
   } finally {
     server.close();
     await once(server, "close");
   }
 
-  console.log("OK: STOCK_CANDLE_BUILDER_FAIL_CLOSED_PASS");
+  console.log("OK: STOCK_CANDLE_BUILDER_CONTRACT_PASS");
 }
 
 main().catch((error) => {

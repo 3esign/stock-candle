@@ -25,7 +25,7 @@ STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Te
 | SOL entry | ExactIn Jupiter route is integrated; one signature is preferred when the combined route fits, with a two-approval fallback |
 | Prize path | Full SOL pot closes to the leader; full TSLAx pot balance and later fee arrivals remain claimable by that same winner |
 | Public product | This project owns the site, public rules, metadata, launch copy and QA |
-| Mainnet launch | Not deployed; no `$XCNDL` mint or program CA exists yet |
+| Mainnet launch | Live: `$XCNDL` mint `5CmZR4...5sF`, program `4NAF1Q...AAHB`, config `5LN2kP...Brp2` |
 | Social metadata | Telegram is `https://t.me/chetx`; launch post is `https://x.com/SonyxEth/status/2099118851627602318` |
 
 ## Build Order
@@ -45,4 +45,4 @@ Verified: the core Candle Ladder program and local adversarial tests, current TS
 
 Concluded: the user should be able to enter with SOL without separately discovering where TSLAx trades. The conversion settles on-chain and remains wallet-signed; the route builder is replaceable infrastructure, not game authority. A sampled combined packet fits one signature, but its public feature flag remains off until final-mint runtime proof.
 
-Not done: `$XCNDL` creation, program deploy, config initialization, launch funding, or any irreversible transaction. DNS and social metadata are live; GitHub Pages custom-domain HTTPS is still provisioning.
+Live now: `$XCNDL`, the program, frozen 15-minute config, 0.05 SOL pot seed, locked creator-fee split and frozen game ALT are on mainnet. The final founder purchase, wallet transfer, live browser-wallet proof and program-authority revocation remain until their readbacks succeed.

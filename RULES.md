@@ -1,6 +1,6 @@
 # STOCK CANDLE - Public Rules Draft
 
-Status: pre-launch. The economics below are frozen for the deployment rehearsal; no on-chain deployment exists yet.
+Status: live on Solana mainnet. The economics below are frozen in the deployed config and locked fee-sharing state.
 
 ## The Game In One Sentence
 

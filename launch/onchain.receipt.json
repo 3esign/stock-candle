@@ -1,0 +1,63 @@
+{
+  "gameInit": {
+    "at": "2026-09-13T14:04:07.711Z",
+    "signature": "546dcPYAm1RyzGU4MxWc887UNRY5tLjbuputNcri1uu14PCSGVsruzntTfBNLWjoEvceCDQNmG4WhPb6jTGXkmiW",
+    "startTs": 1789308845,
+    "endTs": 1789309745,
+    "config": "5LN2kPUJqgAbqbDALpi1EUq2CHx84UqPszBmbtc3Brp2",
+    "configBump": 255,
+    "configState": {
+      "isInit": 1,
+      "configBump": 255,
+      "potBump": 255,
+      "startTs": 1789308845,
+      "endTs": 1789309745,
+      "minBuyRaw": "1000000000000",
+      "entryFeeLamports": "1000000",
+      "closed": false,
+      "winner": "11111111111111111111111111111111",
+      "baseMint": "5CmZR4yHKwfTDL5y7PoMJ6kTR9LJBcsdXPBoY9tLT5sF",
+      "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "rungStepRaw": "1000000000000",
+      "quoteMint": "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+      "quoteTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+    },
+    "pot": "6BztA9ESeDTWN5PsQmMXa3wUTT8wpvWswW6VcAYUTVLN",
+    "potBump": 255,
+    "potLamports": 50000000,
+    "potQuoteAta": "EG9AbYCgksSd7Z5TViBgwY8QYE9kH2xQnU3ThcjqguPN",
+    "potQuoteAtaExists": true
+  },
+  "gameAlt": {
+    "at": "2026-09-13T14:06:00.569Z",
+    "address": "EhSkfKUZQbQTyd2uhekpsXWSfJx53ZFCBpYVquDNEBP6",
+    "addressCount": 21,
+    "addresses": [
+      "5LN2kPUJqgAbqbDALpi1EUq2CHx84UqPszBmbtc3Brp2",
+      "6BztA9ESeDTWN5PsQmMXa3wUTT8wpvWswW6VcAYUTVLN",
+      "4wTV1YmiEkRvAtNtsSGPtUrqRYQMe5SKy2uB4Jjaxnjf",
+      "5CmZR4yHKwfTDL5y7PoMJ6kTR9LJBcsdXPBoY9tLT5sF",
+      "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+      "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+      "62qc2CNXwrYqQScmEdiZFFAnJR262PxWEuNQtxfafNgV",
+      "4L4YELsRvnUdkYp3CzohPb3PBijM28axnZ5y77ujohDv",
+      "5YxQFdt3Tr9zJLvkFccqXVUwhdTWJQc1fFg2YPbxvxeD",
+      "5BeJQt6GsCwYX9npyzopq4QZQTmWgH17H1zmhsoBQ2g1",
+      "H3MyZ54V5FN3oP4BPXfvuAdBm1poMACkRa7JZQ2bZVkS",
+      "8xTRpwBuc9an7gfSrQ3ewAVCftrnEZeS6VD6zQ6er7wQ",
+      "ASJ3i7tVshpPTtLrZWcLhPCikARCmXTq6cW5Bd5o2V54",
+      "CirPQWxyjgS9EteoLCUJb1q9Y1yYrBpPWcDiyghLPTRo",
+      "7ZpA6hbLJPAN462Wzo9ZrHsFJeqPcCSQFurKRL8a89Dt",
+      "6DbEcsWndMz6qupU7x1x9iYuwaJKLKpRp6qZV9STZwkd",
+      "Hq2wp8uJ9jCPsYgNHex8RtqdvMPfVGoYwjvF1ATiwn2Y",
+      "8Wf5TiAheLUqBrKXeYg2JtAFFMWtKdG2BSFgqUcPVwTt",
+      "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ",
+      "Ce6TQqeHC9p8KetsN6JsjHK7UTZk7nasjjnr7XxXp9F1"
+    ],
+    "setupSignature": "4AM3EFnhS1bKMytwGp9HWDz2eBsLPPBJmtX9kBTkrbGyGKrsLvvg4iMTsqHLeVMqnBMPEc2ZuhAbrHjRU5s2XK5L",
+    "freezeSignature": "2sx39Fw4UQP3R5cB37ZtbyNPSCsQLLA4uc8cHaaf2oLK3d3bYRRSzRLD3pV5kPAacHmZyErzCNbZ9DAt6acZrXLw",
+    "founderPacketBytes": 551,
+    "authority": null
+  }
+}

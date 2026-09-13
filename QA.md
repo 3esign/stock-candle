@@ -1,6 +1,6 @@
 # STOCK CANDLE - Pre-launch QA
 
-Verified: 2026-09-13. No wallet key was read. Nothing was signed, sent, deployed or spent.
+Verified again against public HTTPS on 2026-09-13. No wallet key was read. Nothing was signed, sent, deployed or spent.
 
 ## Static Gates
 
@@ -20,13 +20,13 @@ Result: `STOCK_CANDLE_BUILDER_FAIL_CLOSED_PASS`. The exact config offsets decode
 
 ## Browser Gates
 
-Command: `node site/test/browser-qa.js http://127.0.0.1:8791/`
+Command: `node site/test/browser-qa.js https://scandle.ratchetx.xyz/`
 
 - desktop: `1440x1000`, scroll width `1440`, zero overflowing visible elements;
 - mobile: `390x844`, scroll width `390`, zero overflowing visible elements;
 - Canvas colored samples are nonzero on desktop and mobile;
 - launch state: `PRE-LAUNCH` and trade button disabled on both;
-- real browser UI quote at the latest pass: `0.05 SOL -> at least 0.01357209 TSLAx`;
+- real browser UI quote at the latest pass: `0.05 SOL -> at least 0.01362529 TSLAx`;
 - Jupiter quote CORS: success with positive TSLAx output;
 - Jupiter swap POST CORS: endpoint reached; intentionally empty body returned HTTP `422`, proving the browser can receive the response without building or signing a transaction.
 
@@ -42,4 +42,4 @@ Verified: static fail-closed behavior, rung-pricing math, actual browser layout 
 
 Concluded: a player can be offered TSLAx acquisition inside the site without custody or a private RPC. One-signature entry is packet-feasible and the browser contract is ready; two wallet approvals remain the safe runtime fallback.
 
-Not verified: a real browser-wallet SOL swap through this new page, the final-account production builder, combined final-mint runtime execution, deployed account reads, DNS publication or any mainnet launch action. Economics are locally frozen and live-priced, but remain uninitialized until deploy.
+Not verified: a real browser-wallet SOL swap through this new page, final-account builder execution, combined final-mint runtime execution, deployed account reads or any mainnet launch action. DNS, direct HTTPS, responsive public rendering and the no-key builder health endpoint are verified; economics remain uninitialized until deploy.

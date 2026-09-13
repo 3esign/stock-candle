@@ -40,3 +40,4 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T16:15:00+02:00 · Codex/Svemir · dodat poslednji authority-lock gate: program se moze uciniti immutable tek posle finalnog config/fee/ALT readbacka i founder wrapper+transfer potpisa · ok
 - 2026-09-13T16:18:00+02:00 · Codex/Svemir · prvi quick tunnel uhvatio pogresan inherited Cloudflare config i javni 404; dodat eksplicitan minimalni project config za cist accountless tunel · fixed
 - 2026-09-13T16:20:00+02:00 · Codex/Svemir · cist builder tunnel javno vraca health 200 sa `signs:false/sends:false`; predeploy trade endpoint fail-closed vraca 503 i ispravan CORS · ok
+- 2026-09-13T15:52:23+02:00 · Codex/Svemir · posle finalne uplate ponovljeni admin/rung/builder/site testovi, read-only mainnet status, Pump create simulacija i javni HTTPS browser QA; saldo je 0.494485737 SOL, create simulacija 136,100 CU, svi testovi zeleni, mint/program i dalje ne postoje i nista nije poslato · ok

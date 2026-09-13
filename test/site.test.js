@@ -26,8 +26,8 @@ assert.match(html, /No price, wallet, pot or leaderboard value shown here is liv
 assert.match(html, /Not affiliated with Tesla/i);
 assert.doesNotMatch(html, /Tesla logo|Tesla car/i);
 
-assert.strictEqual(manifest.deployed, false);
-assert.strictEqual(manifest.tradingEnabled, false);
+assert.strictEqual(manifest.deployed, true);
+assert.strictEqual(manifest.tradingEnabled, true);
 assert.strictEqual(manifest.atomicSolEntryEnabled, false);
 assert.strictEqual(manifest.launchParameters.windowSeconds, 900);
 assert.strictEqual(manifest.launchParameters.minimumBaseAmountRaw, "1000000000000");
@@ -36,14 +36,14 @@ assert.strictEqual(manifest.launchParameters.successfulRungFeeLamports, "1000000
 assert.strictEqual(manifest.launchParameters.initialPotLamports, "50000000");
 assert.strictEqual(manifest.creatorFeeSharing.potShareBps, 6633);
 assert.strictEqual(manifest.creatorFeeSharing.creatorShareBps, 3367);
-assert.strictEqual(manifest.creatorFeeSharing.lockedOnChain, false);
-assert.strictEqual(manifest.mint, "");
-assert.strictEqual(manifest.programId, "");
-assert.strictEqual(manifest.config, "");
-assert.strictEqual(manifest.pot, "");
-assert.strictEqual(manifest.potQuoteAta, "");
-assert.strictEqual(manifest.gameAlt, "");
-assert.strictEqual(manifest.gameBuilderUrl, "");
+assert.strictEqual(manifest.creatorFeeSharing.lockedOnChain, true);
+assert.strictEqual(manifest.mint, "5CmZR4yHKwfTDL5y7PoMJ6kTR9LJBcsdXPBoY9tLT5sF");
+assert.strictEqual(manifest.programId, "4NAF1Q253cmH4mviU5eMF3A23qUGxzuwXhkHAoGvAAHB");
+assert.strictEqual(manifest.config, "5LN2kPUJqgAbqbDALpi1EUq2CHx84UqPszBmbtc3Brp2");
+assert.strictEqual(manifest.pot, "6BztA9ESeDTWN5PsQmMXa3wUTT8wpvWswW6VcAYUTVLN");
+assert.strictEqual(manifest.potQuoteAta, "EG9AbYCgksSd7Z5TViBgwY8QYE9kH2xQnU3ThcjqguPN");
+assert.strictEqual(manifest.gameAlt, "EhSkfKUZQbQTyd2uhekpsXWSfJx53ZFCBpYVquDNEBP6");
+assert.strictEqual(manifest.gameBuilderUrl, "https://angle-rotary-activated-eds.trycloudflare.com");
 assert.strictEqual(manifest.tslaxMint, "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB");
 assert.strictEqual(manifest.expectedProgramSha256, "22EE4F121EC05B9C47CA32001A740FAFAFB46939A2AAF7E402D86E4A9BE29A6B");
 assert.strictEqual(manifest.telegramUrl, "https://t.me/chetx");
@@ -77,7 +77,7 @@ assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(css, /aspect-ratio: 16 \/ 8\.4/);
 assert.doesNotMatch(css, /font-size:\s*clamp\([^)]*vw/);
 
-assert.match(rules, /Status: pre-launch/);
+assert.match(rules, /Status: live on Solana mainnet/);
 assert.match(rules, /The builder never holds funds or a player key/);
 assert.match(rules, /Frozen Launch Values/);
 assert.match(rules, /repeatable/i);
@@ -89,4 +89,4 @@ for (const file of ["index.html", "rules.html", "styles.css", "app.js", "manifes
   assert.ok(Buffer.from(read(file), "utf8").every((byte) => byte < 128), file + " must remain ASCII");
 }
 
-console.log("OK: STOCK_CANDLE_SITE_PRELAUNCH_GATES_PASS");
+console.log("OK: STOCK_CANDLE_SITE_GATES_PASS");

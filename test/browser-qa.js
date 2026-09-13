@@ -227,7 +227,7 @@ async function main() {
       assert.deepStrictEqual(metrics.overflow, []);
       assert.strictEqual(metrics.h1, "STOCK CANDLE");
       assert.match(metrics.lead, /SOL or TSLAx.*\$XCNDL.*1,000,000-token.*SOL pot.*TSLAx fee prize/);
-      assert.strictEqual(metrics.launch, "PRE-LAUNCH");
+      assert.strictEqual(metrics.launch, "LIVE");
       assert.strictEqual(metrics.tradeDisabled, true);
       assert.ok(metrics.canvasColoredSamples > 500, "Canvas must contain visible chart pixels");
     }

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
+  <title id="title">XCNDL token mark</title>
+  <desc id="description">A rising stock candlestick ladder labeled XCNDL and TSLAx pair.</desc>
+  <rect width="1024" height="1024" fill="#f4f1e9"/>
+  <rect x="54" y="54" width="916" height="916" rx="28" fill="none" stroke="#11110f" stroke-width="26"/>
+  <path d="M150 696H874M150 530H874M150 364H874" fill="none" stroke="#b8b4aa" stroke-width="10" stroke-dasharray="22 18"/>
+  <g stroke="#11110f" stroke-width="18">
+    <path d="M236 706V548"/><rect x="196" y="588" width="80" height="82" fill="#de3e35"/>
+    <path d="M420 612V390"/><rect x="380" y="450" width="80" height="112" fill="#00a867"/>
+    <path d="M604 466V248"/><rect x="564" y="294" width="80" height="118" fill="#00a867"/>
+    <path d="M788 330V142"/><rect x="748" y="192" width="80" height="92" fill="#174cff"/>
+  </g>
+  <rect x="120" y="754" width="784" height="142" rx="12" fill="#11110f"/>
+  <text x="512" y="844" fill="#fffef9" font-family="Arial, Helvetica, sans-serif" font-size="94" font-weight="900" text-anchor="middle">XCNDL</text>
+  <rect x="656" y="104" width="248" height="68" rx="12" fill="#f3c62f" stroke="#11110f" stroke-width="10"/>
+  <text x="780" y="148" fill="#11110f" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900" text-anchor="middle">TSLAx PAIR</text>
+</svg>

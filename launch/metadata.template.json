@@ -1,0 +1,14 @@
+{
+  "name": "STOCK CANDLE",
+  "symbol": "XCNDL",
+  "description": "A fully on-chain Solana candle race paired with TSLAx. Buy XCNDL, cross irreversible rungs, and climb the public leaderboard for the live SOL pot.",
+  "image": "https://stockcandle.ratchetx.xyz/assets/xcndl-token.png",
+  "external_url": "https://stockcandle.ratchetx.xyz/",
+  "twitter": "TBD_AFTER_FINAL_POST",
+  "telegram": "TBD_FROM_SEMIR",
+  "attributes": [
+    { "trait_type": "Game", "value": "Candle Ladder" },
+    { "trait_type": "Pair", "value": "TSLAx" },
+    { "trait_type": "Network", "value": "Solana" }
+  ]
+}

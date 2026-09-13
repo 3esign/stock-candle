@@ -1,0 +1,23 @@
+{
+  "kit": "svemir-project-kit/v1",
+  "name": "STOCK CANDLE",
+  "description": "A fully on-chain Solana launch race paired with TSLAx: verified XCNDL buys cross irreversible candle rungs and the leading wallet receives the live SOL pot.",
+  "created": "2026-09-13T08:37:37.390Z",
+  "updated": "2026-09-13T10:12:00+02:00",
+  "status": "registration-failed",
+  "phases": ["prelaunch-product", "launch-rehearsal", "mainnet-launch", "immutable-close"],
+  "currentPhase": "prelaunch-product",
+  "nextMove": "Freeze launch economics, finish the no-keypair game builder, then insert Semir's final X and Telegram URLs before deploy rehearsal.",
+  "registration": {
+    "status": "failed",
+    "path": "C:\\Svemir\\data\\project_kits.jsonl",
+    "error": "registry remains unwritable to project_kit and apply_patch; project is separately indexed in !Projekti/INDEX.md and KATALOG.jsonl",
+    "at": "2026-09-13T10:12:00+02:00"
+  },
+  "stats": {
+    "log": 7,
+    "terms": 4,
+    "kb": 10,
+    "handoffs": 0
+  }
+}

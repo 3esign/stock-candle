@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>STOCK CANDLE | XCNDL x TSLAx</title>
+  <meta name="description" content="A fully on-chain Solana candle race. Enter with SOL or TSLAx, buy XCNDL, cross the next rung, and climb the public leaderboard.">
+  <meta name="theme-color" content="#f4f1e9">
+  <meta property="og:title" content="STOCK CANDLE | XCNDL x TSLAx">
+  <meta property="og:description" content="Buy XCNDL with TSLAx. Cross the next on-chain candle rung. The highest wallet at close wins the live SOL pot.">
+  <meta property="og:image" content="https://stockcandle.ratchetx.xyz/assets/xcndl-token.png">
+  <link rel="icon" href="assets/xcndl-token.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#play">Skip to play</a>
+
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="STOCK CANDLE home">
+      <img src="assets/xcndl-token.svg" width="34" height="34" alt="">
+      <span>STOCK CANDLE</span>
+    </a>
+    <div class="top-actions">
+      <span class="network">SOLANA MAINNET</span>
+      <span class="launch-pill" id="launchPill">PRE-LAUNCH</span>
+      <button class="button small" id="connectTop" type="button">Connect wallet</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="first-view" aria-labelledby="pageTitle">
+      <div class="title-block">
+        <p class="eyebrow">XCNDL / TSLAx &middot; CANDLE LADDER</p>
+        <h1 id="pageTitle">STOCK<br>CANDLE</h1>
+        <p class="lead">Buy <strong>$XCNDL</strong> with <strong>TSLAx</strong>. Cross the next on-chain candle rung. The highest wallet at close wins the live SOL pot.</p>
+        <div class="primary-actions">
+          <a class="button primary" href="#play">Enter with SOL</a>
+          <a class="button" href="#rules">Read rules</a>
+        </div>
+        <dl class="identity-line" aria-label="Token identity">
+          <div><dt>BUY</dt><dd>$XCNDL</dd></div>
+          <div><dt>PAIR</dt><dd>TSLAx</dd></div>
+          <div><dt>WIN</dt><dd>SOL POT</dd></div>
+        </dl>
+      </div>
+
+      <div class="market-surface" aria-labelledby="chartTitle">
+        <div class="chart-head">
+          <div>
+            <p class="eyebrow">MECHANIC PREVIEW</p>
+            <h2 id="chartTitle">Every crossed candle locks a rung.</h2>
+          </div>
+          <span class="live-label pending" id="chartState">NOT LIVE</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="ladderCanvas" aria-hidden="true"></canvas>
+          <div class="chart-axis" aria-hidden="true">
+            <span>START</span><span>NEXT RUNG</span><span>CLOSE</span>
+          </div>
+        </div>
+        <p class="chart-summary" id="chartSummary">Preview only: green candles demonstrate awarded rungs. No price, wallet, pot or leaderboard value shown here is live.</p>
+        <div class="rule-strip">
+          <div><strong>1 BUY</strong><span>can earn at most one rung</span></div>
+          <div><strong>SELLS</strong><span>never move the target down</span></div>
+          <div><strong>ANYONE</strong><span>can settle after close</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="entry-band" id="play" aria-labelledby="playTitle">
+      <div class="section-heading">
+        <p class="eyebrow">PLAYER ENTRY</p>
+        <h2 id="playTitle">Start with what you have.</h2>
+        <p>Use SOL and get TSLAx inside the site, then approve the game buy. The reliable launch path uses two clear wallet approvals; direct TSLAx players need only the game approval.</p>
+      </div>
+
+      <div class="trade-workspace">
+        <div class="mode-tabs" role="tablist" aria-label="Entry asset">
+          <button class="mode-tab active" id="modeSol" type="button" role="tab" aria-selected="true" data-mode="sol">I have SOL</button>
+          <button class="mode-tab" id="modeTslax" type="button" role="tab" aria-selected="false" data-mode="tslax">I have TSLAx</button>
+        </div>
+
+        <div class="trade-form">
+          <label class="amount-field" for="entryAmount">
+            <span id="amountLabel">SOL to convert</span>
+            <span class="amount-box"><input id="entryAmount" inputmode="decimal" autocomplete="off" value="0.01" aria-describedby="amountHelp"><b id="amountUnit">SOL</b></span>
+            <small id="amountHelp">A fresh route is checked before your wallet is asked to sign.</small>
+          </label>
+
+          <div class="quote-panel" aria-live="polite">
+            <span class="quote-label">Route preview</span>
+            <strong id="quoteValue">Connect a wallet, then request a quote.</strong>
+            <span id="quoteDetail">Nothing is signed by checking.</span>
+          </div>
+
+          <label class="eligibility" for="eligibilityCheck">
+            <input id="eligibilityCheck" type="checkbox">
+            <span>I confirm TSLAx is available to me in my location and I accept its market and issuer risks.</span>
+          </label>
+          <p class="eligibility-info"><a href="https://xstocks.com/" target="_blank" rel="noopener noreferrer">Check official TSLAx availability and restrictions</a></p>
+
+          <div class="trade-actions">
+            <button class="button" id="connectWallet" type="button">Connect wallet</button>
+            <button class="button cobalt" id="quoteButton" type="button">Check SOL &rarr; TSLAx</button>
+            <button class="button primary" id="tradeButton" type="button" disabled>Trading opens at launch</button>
+          </div>
+          <p class="trade-status" id="tradeStatus" role="status">Pre-launch mode. Quotes may be inspected; spending is disabled until verified deployment data is published.</p>
+        </div>
+
+        <dl class="trust-ledger" aria-label="Entry trust boundary">
+          <div><dt>Wallet</dt><dd id="walletValue">Not connected</dd></div>
+          <div><dt>Conversion</dt><dd>Jupiter route, settled on Solana</dd></div>
+          <div><dt>Game buy</dt><dd>Pump buy verified by the game program</dd></div>
+          <div><dt>Custody</dt><dd>None. Your wallet signs and owns the result.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="how-band" aria-labelledby="howTitle">
+      <div class="section-heading compact">
+        <p class="eyebrow">ONE PUBLIC RACE</p>
+        <h2 id="howTitle">Four moves. No private referee.</h2>
+      </div>
+      <ol class="steps">
+        <li><span>01</span><strong>Enter</strong><p>Swap SOL to TSLAx here, or use TSLAx you already hold.</p></li>
+        <li><span>02</span><strong>Buy</strong><p>Your wallet buys <strong>$XCNDL</strong> through the TSLAx Pump curve.</p></li>
+        <li><span>03</span><strong>Cross</strong><p>The buy that crosses the next locked candle earns one rung.</p></li>
+        <li><span>04</span><strong>Settle</strong><p>After close, anyone can send the full game pot to the on-chain leader.</p></li>
+      </ol>
+    </section>
+
+    <section class="state-band" aria-labelledby="stateTitle">
+      <div class="state-copy">
+        <p class="eyebrow">ON-CHAIN BOARD</p>
+        <h2 id="stateTitle">Empty until truth exists.</h2>
+        <p id="stateExplanation">The program and token are not deployed. This board will read accounts directly when verified addresses are frozen in the public manifest.</p>
+      </div>
+      <dl class="state-grid">
+        <div><dt>XCNDL CA</dt><dd id="mintState">PENDING</dd></div>
+        <div><dt>Game program</dt><dd id="programState">PENDING</dd></div>
+        <div><dt>Live pot</dt><dd id="potState">NOT CREATED</dd></div>
+        <div><dt>Next rung</dt><dd id="rungState">NOT STARTED</dd></div>
+        <div><dt>Leader</dt><dd id="leaderState">NO RACE</dd></div>
+        <div><dt>Close</dt><dd id="closeState">NOT SCHEDULED</dd></div>
+      </dl>
+    </section>
+
+    <section class="rules-band" id="rules" aria-labelledby="rulesTitle">
+      <div class="section-heading compact">
+        <p class="eyebrow">RULES THAT SURVIVE THE WEBSITE</p>
+        <h2 id="rulesTitle">The ladder only goes up.</h2>
+      </div>
+      <div class="rules-columns">
+        <div>
+          <h3>What the program proves</h3>
+          <p>A rung is recorded only after a real Pump <code>buy_v2</code> succeeds and observed player and curve token deltas match the requested <strong>$XCNDL</strong> buy. A failed buy rolls everything back.</p>
+        </div>
+        <div>
+          <h3>What cannot be recycled</h3>
+          <p>One transaction earns at most one rung. Selling never lowers the stored high-water mark, so selling and buying again cannot reclaim an old level.</p>
+        </div>
+        <div>
+          <h3>What the interface cannot own</h3>
+          <p>The site and route builder prepare unsigned data. They hold no player funds or keys. The deployed program, token accounts and settlement remain callable without this website.</p>
+        </div>
+      </div>
+      <a class="text-link" href="rules.html">Read the full pre-launch rules &rarr;</a>
+    </section>
+
+    <section class="proof-band" aria-labelledby="proofTitle">
+      <div>
+        <p class="eyebrow">CURRENT PROOF</p>
+        <h2 id="proofTitle">Built locally. Not presented as launched.</h2>
+      </div>
+      <ul class="proof-list">
+        <li><strong>9/9</strong><span>LiteSVM program tests</span></li>
+        <li><strong>22,048 B</strong><span>current SBF artifact</span></li>
+        <li><strong>ROLLBACK</strong><span>failed CPI, ATA, token and fee state</span></li>
+        <li><strong>PERMISSIONLESS</strong><span>one-time pot settlement</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand">
+      <strong>STOCK CANDLE</strong>
+      <span>$XCNDL &middot; TSLAx pair &middot; Solana</span>
+    </div>
+    <div class="socials">
+      <a id="xLink" hidden rel="noopener noreferrer">X</a>
+      <a id="telegramLink" hidden rel="noopener noreferrer">Telegram</a>
+      <span id="socialPending">X and Telegram links pending metadata freeze.</span>
+    </div>
+    <p class="risk">Independent on-chain game. Not affiliated with Tesla or the TSLAx issuer. $XCNDL is not equity. TSLAx availability is jurisdiction-dependent. No reward, profit, price, liquidity or route is guaranteed.</p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

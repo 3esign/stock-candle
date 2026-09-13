@@ -1,0 +1,22 @@
+{
+  "product": "STOCK CANDLE",
+  "symbol": "XCNDL",
+  "network": "mainnet-beta",
+  "siteUrl": "https://stockcandle.ratchetx.xyz/",
+  "deployed": false,
+  "tradingEnabled": false,
+  "tslaxMint": "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+  "mint": "",
+  "programId": "",
+  "config": "",
+  "pot": "",
+  "gameBuilderUrl": "",
+  "jupiterQuoteApi": "https://lite-api.jup.ag/swap/v1/quote",
+  "jupiterSwapApi": "https://lite-api.jup.ag/swap/v1/swap",
+  "rpcUrls": [
+    "https://api.mainnet-beta.solana.com"
+  ],
+  "xUrl": "",
+  "telegramUrl": "",
+  "xstocksInfoUrl": "https://xstocks.com/"
+}

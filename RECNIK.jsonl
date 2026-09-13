@@ -1,0 +1,4 @@
+{"term":"STOCK CANDLE","definition":"Javni naziv on-chain launch igre; povezuje berzanski candle jezik sa konačnom ladder trkom.","source":"README.md","at":"2026-09-13T09:24:00+02:00"}
+{"term":"XCNDL","definition":"Planirani simbol game tokena koji se kupuje TSLAx-om; još nema mainnet mint ni CA.","source":"README.md","at":"2026-09-13T09:24:00+02:00"}
+{"term":"candle rung","definition":"Jedan nepovratan nivo koji dobija prva verifikovana kupovina koja pređe sledeći zaključani prag krive.","source":"RULES.md","at":"2026-09-13T09:24:00+02:00"}
+{"term":"Play with SOL","definition":"Wallet-signed ulaz koji svežom rutom pretvara SOL u TSLAx pre game kupovine; nije custody niti administratorska prečica.","source":"RULES.md","at":"2026-09-13T09:38:00+02:00"}

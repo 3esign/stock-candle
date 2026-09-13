@@ -226,7 +226,7 @@ async function main() {
       assert.strictEqual(metrics.scrollWidth, metrics.innerWidth, JSON.stringify(metrics.overflow));
       assert.deepStrictEqual(metrics.overflow, []);
       assert.strictEqual(metrics.h1, "STOCK CANDLE");
-      assert.match(metrics.lead, /\$XCNDL.*TSLAx.*SOL pot/);
+      assert.match(metrics.lead, /SOL or TSLAx.*\$XCNDL.*1,000,000-token.*SOL pot.*TSLAx fee prize/);
       assert.strictEqual(metrics.launch, "PRE-LAUNCH");
       assert.strictEqual(metrics.tradeDisabled, true);
       assert.ok(metrics.canvasColoredSamples > 500, "Canvas must contain visible chart pixels");

@@ -12,6 +12,9 @@ const app = {
   atomicFallback: false,
   busy: false,
   rpcUrl: "",
+  chainVerified: false,
+  chainState: null,
+  chainRefresh: 0,
 };
 
 const ui = {};
@@ -127,9 +130,11 @@ function findWalletProvider() {
   return null;
 }
 
-function manifestIsLaunchReady() {
+function manifestIsConfigured() {
   const m = app.manifest || {};
   const address = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+  const rules = m.launchParameters || {};
+  const shares = m.creatorFeeSharing || {};
   return Boolean(
     m.deployed === true &&
     m.tradingEnabled === true &&
@@ -137,8 +142,26 @@ function manifestIsLaunchReady() {
     address.test(m.programId || "") &&
     address.test(m.config || "") &&
     address.test(m.pot || "") &&
-    /^https:\/\//.test(m.gameBuilderUrl || "")
+    address.test(m.potQuoteAta || "") &&
+    address.test(m.baseTokenProgram || "") &&
+    address.test(m.tslaxTokenProgram || "") &&
+    /^https:\/\//.test(m.gameBuilderUrl || "") &&
+    /^https:\/\//.test(m.xUrl || "") &&
+    /^https:\/\//.test(m.telegramUrl || "") &&
+    /^[0-9A-F]{64}$/.test(m.expectedProgramSha256 || "") &&
+    rules.windowSeconds === 900 &&
+    rules.minimumBaseAmountRaw === "1000000000000" &&
+    rules.rungStepRaw === "1000000000000" &&
+    rules.successfulRungFeeLamports === "1000000" &&
+    rules.initialPotLamports === "50000000" &&
+    shares.potShareBps === 6633 &&
+    shares.creatorShareBps === 3367 &&
+    shares.lockedOnChain === true
   );
+}
+
+function manifestIsLaunchReady() {
+  return manifestIsConfigured() && app.chainVerified;
 }
 
 function atomicSolEntryEnabled() {
@@ -155,6 +178,130 @@ function setStatus(message, kind = "") {
   ui.tradeStatus.dataset.kind = kind;
 }
 
+function setStateStatus(message, kind = "") {
+  ui.stateStatus.textContent = message;
+  ui.stateStatus.dataset.kind = kind;
+}
+
+function readU64(bytes, offset) {
+  return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength).getBigUint64(offset, true);
+}
+
+function readI64(bytes, offset) {
+  return Number(new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength).getBigInt64(offset, true));
+}
+
+function addressAt(bytes, offset) {
+  return base58Encode(bytes.slice(offset, offset + 32));
+}
+
+function zeroAddressAt(bytes, offset) {
+  return bytes.slice(offset, offset + 32).every((value) => value === 0);
+}
+
+function formatSol(lamports) {
+  return rawToDecimal(BigInt(lamports), 9, 6) + " SOL";
+}
+
+function decodeGameConfig(bytes) {
+  if (bytes.length < 380 || bytes[0] !== 1) throw new Error("Game config has an invalid layout.");
+  const topWallet = zeroAddressAt(bytes, 92) ? "" : addressAt(bytes, 92);
+  const storedWinner = zeroAddressAt(bytes, 52) ? "" : addressAt(bytes, 52);
+  return {
+    startTs: readI64(bytes, 3),
+    endTs: readI64(bytes, 11),
+    minimumBuyRaw: readU64(bytes, 19).toString(),
+    entryFeeLamports: readU64(bytes, 27).toString(),
+    totalStrikes: readU64(bytes, 35).toString(),
+    closed: bytes[51] === 1,
+    winner: storedWinner,
+    winnerScore: readU64(bytes, 84).toString(),
+    leader: topWallet,
+    leaderScore: readU64(bytes, 124).toString(),
+    baseMint: addressAt(bytes, 236),
+    baseTokenProgram: addressAt(bytes, 268),
+    rungStepRaw: readU64(bytes, 300).toString(),
+    quoteMint: addressAt(bytes, 316),
+    quoteTokenProgram: addressAt(bytes, 348),
+  };
+}
+
+function renderCountdown() {
+  if (!app.chainState) return;
+  if (app.chainState.closed) {
+    ui.closeState.textContent = "CLOSED";
+    return;
+  }
+  const seconds = Math.max(0, app.chainState.endTs - Math.floor(Date.now() / 1000));
+  const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const rest = (seconds % 60).toString().padStart(2, "0");
+  ui.closeState.textContent = seconds ? minutes + ":" + rest : "READY TO SETTLE";
+  renderStateActions();
+}
+
+function renderStateActions() {
+  if (!ui.settleButton || !ui.claimButton) return;
+  const ready = manifestIsLaunchReady();
+  const state = app.chainState;
+  const connected = Boolean(app.wallet);
+  const afterClose = state && Math.floor(Date.now() / 1000) > state.endTs;
+  ui.settleButton.disabled = app.busy || !ready || !connected || !state || state.closed || !afterClose || !state.leader;
+  ui.claimButton.disabled = app.busy || !ready || !connected || !state || !state.closed || BigInt(state.prizeRaw || "0") === 0n;
+}
+
+function renderChainState() {
+  const state = app.chainState;
+  if (!state) return;
+  ui.potState.textContent = formatSol(state.potLamports);
+  ui.prizeState.textContent = state.prizeUi + " TSLAx";
+  ui.rungState.textContent = state.closed ? "RACE CLOSED" : "1M XCNDL MORE";
+  const leader = state.closed ? state.winner : state.leader;
+  const score = state.closed ? state.winnerScore : state.leaderScore;
+  ui.leaderState.textContent = leader ? shorten(leader) + " / " + score + " rung" + (score === "1" ? "" : "s") : "NO LEADER";
+  ui.stateExplanation.textContent = "Live values are read directly from the verified config, SOL pot and TSLAx token account. The builder is not the source of game state.";
+  ui.chartSummary.textContent = "Live board verified: " + state.totalStrikes + " awarded rung" + (state.totalStrikes === "1" ? "" : "s") + ". The yellow line represents the next 1M XCNDL target.";
+  renderCountdown();
+  renderStateActions();
+}
+
+async function hydrateOnChainState() {
+  if (!manifestIsConfigured()) return;
+  app.chainVerified = false;
+  const [configResult, potResult, prizeResult] = await Promise.all([
+    rpc("getAccountInfo", [app.manifest.config, { encoding: "base64", commitment: "confirmed" }]),
+    rpc("getBalance", [app.manifest.pot, { commitment: "confirmed" }]),
+    rpc("getTokenAccountBalance", [app.manifest.potQuoteAta, { commitment: "confirmed" }]),
+  ]);
+  if (!configResult || !configResult.value || configResult.value.owner !== app.manifest.programId) {
+    throw new Error("Config account owner does not match the published game program.");
+  }
+  const bytes = bytesFromBase64(configResult.value.data[0]);
+  const decoded = decodeGameConfig(bytes);
+  if (decoded.baseMint !== app.manifest.mint
+      || decoded.baseTokenProgram !== app.manifest.baseTokenProgram
+      || decoded.quoteMint !== app.manifest.tslaxMint
+      || decoded.quoteTokenProgram !== app.manifest.tslaxTokenProgram) {
+    throw new Error("Config mint or token-program binding does not match the public manifest.");
+  }
+  const rules = app.manifest.launchParameters;
+  if (decoded.minimumBuyRaw !== rules.minimumBaseAmountRaw
+      || decoded.rungStepRaw !== rules.rungStepRaw
+      || decoded.entryFeeLamports !== rules.successfulRungFeeLamports
+      || decoded.endTs - decoded.startTs !== rules.windowSeconds) {
+    throw new Error("On-chain game rules do not match the public manifest.");
+  }
+  app.chainState = {
+    ...decoded,
+    potLamports: String(potResult.value),
+    prizeRaw: prizeResult.value.amount,
+    prizeUi: prizeResult.value.uiAmountString || rawToDecimal(prizeResult.value.amount, prizeResult.value.decimals),
+  };
+  app.chainVerified = true;
+  renderManifest();
+  renderChainState();
+  renderEntry();
+}
+
 function renderManifest() {
   const m = app.manifest;
   const ready = manifestIsLaunchReady();
@@ -164,6 +311,7 @@ function renderManifest() {
   ui.mintState.textContent = m.mint ? shorten(m.mint) : "PENDING";
   ui.programState.textContent = m.programId ? shorten(m.programId) : "PENDING";
   ui.potState.textContent = m.pot ? shorten(m.pot) : "NOT CREATED";
+  ui.prizeState.textContent = m.potQuoteAta ? shorten(m.potQuoteAta) : "NOT CREATED";
   if (ready) {
     ui.stateExplanation.textContent = "Verified deployment addresses are frozen in the public manifest. Live account reads activate after launch state hydration.";
   }
@@ -208,6 +356,7 @@ function renderEntry() {
   ui.connectWallet.disabled = app.busy;
   ui.connectTop.disabled = app.busy;
   ui.quoteButton.disabled = app.busy || !eligible;
+  renderStateActions();
 
   if (!launchReady) {
     ui.tradeButton.disabled = true;
@@ -487,6 +636,35 @@ async function trade() {
   }
 }
 
+async function runSettlement(kind) {
+  setBusy(true);
+  try {
+    if (!manifestIsLaunchReady()) throw new Error("Live on-chain state is not verified.");
+    if (!app.wallet) throw new Error("Connect your wallet first.");
+    const route = kind === "close" ? "build-close" : "build-quote-claim";
+    const url = new URL("/api/stock-candle/" + route, app.manifest.gameBuilderUrl);
+    url.searchParams.set("user", app.wallet);
+    const built = await fetchJson(url.toString(), { cache: "no-store" });
+    const expectedWinner = app.chainState.closed ? app.chainState.winner : app.chainState.leader;
+    if (!built.intent || built.intent.kind !== kind || built.intent.caller !== app.wallet
+        || built.intent.config !== app.manifest.config || built.intent.winner !== expectedWinner) {
+      throw new Error("Settlement builder intent did not match the verified on-chain state.");
+    }
+    if (!built.transaction || !built.transaction.serializedBase64) {
+      throw new Error((built.gates && built.gates.failures && built.gates.failures[0]) || "Settlement builder returned no transaction.");
+    }
+    await simulateSerializedTransaction(built.transaction.serializedBase64);
+    setStateStatus("Simulation passed. Review the permissionless settlement transaction in your wallet.", "warning");
+    const signature = await walletSignAndSendBase64(built.transaction.serializedBase64);
+    setStateStatus((kind === "close" ? "SOL settlement" : "TSLAx release") + " sent: " + shorten(signature) + ".", "ok");
+    await hydrateOnChainState();
+  } catch (error) {
+    setStateStatus(String(error.message || error), "error");
+  } finally {
+    setBusy(false);
+  }
+}
+
 function drawLadder(canvas, phase) {
   const rect = canvas.getBoundingClientRect();
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -580,6 +758,8 @@ function bindEvents() {
   ui.connectWallet.addEventListener("click", connectWallet);
   ui.quoteButton.addEventListener("click", inspectEntry);
   ui.tradeButton.addEventListener("click", trade);
+  ui.settleButton.addEventListener("click", () => runSettlement("close"));
+  ui.claimButton.addEventListener("click", () => runSettlement("quote-claim"));
   ui.eligibilityCheck.addEventListener("change", renderEntry);
   ui.entryAmount.addEventListener("input", () => {
     app.quote = null;
@@ -605,10 +785,10 @@ function bindEvents() {
 
 async function init() {
   [
-    "launchPill", "chartState", "mintState", "programState", "potState", "rungState", "leaderState", "closeState",
+    "launchPill", "chartState", "mintState", "programState", "potState", "prizeState", "rungState", "leaderState", "closeState",
     "stateExplanation", "xLink", "telegramLink", "socialPending", "eligibilityCheck", "entryAmount", "amountLabel",
     "amountUnit", "amountHelp", "quoteValue", "quoteDetail", "quoteButton", "tradeButton", "tradeStatus", "walletValue",
-    "connectWallet", "connectTop",
+    "connectWallet", "connectTop", "settleButton", "claimButton", "stateStatus", "chartSummary",
   ].forEach((id) => { ui[id] = byId(id); });
   bindEvents();
   startCanvas();
@@ -617,6 +797,25 @@ async function init() {
     app.rpcUrl = (app.manifest.rpcUrls || [])[0] || "";
     renderManifest();
     renderEntry();
+    if (manifestIsConfigured()) {
+      try {
+        await hydrateOnChainState();
+        app.chainRefresh = window.setInterval(() => {
+          hydrateOnChainState().catch((error) => {
+            app.chainVerified = false;
+            setStateStatus("Live state refresh failed: " + String(error.message || error), "error");
+            renderManifest();
+            renderEntry();
+          });
+        }, 15000);
+      } catch (error) {
+        app.chainVerified = false;
+        setStateStatus("Live state verification failed: " + String(error.message || error), "error");
+        renderManifest();
+        renderEntry();
+      }
+    }
+    window.setInterval(renderCountdown, 1000);
   } catch (error) {
     app.manifest = { rpcUrls: [] };
     setStatus("Launch manifest could not be verified. All transaction actions remain disabled.", "error");

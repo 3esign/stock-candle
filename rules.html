@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rules | STOCK CANDLE</title>
+  <meta name="description" content="Pre-launch public rules for the STOCK CANDLE on-chain Solana game.">
+  <link rel="icon" href="assets/xcndl-token.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img src="assets/xcndl-token.svg" width="34" height="34" alt="">
+      <span>STOCK CANDLE</span>
+    </a>
+    <a class="button small" href="index.html#play">Back to entry</a>
+  </header>
+  <main class="rules-document">
+    <p class="eyebrow">PUBLIC RULES &middot; PRE-LAUNCH</p>
+    <h1>The ladder<br>only goes up.</h1>
+    <p class="document-lead">Buy <strong>$XCNDL</strong> with TSLAx. If the verified buy crosses the next locked candle level, your wallet earns one rung. The wallet with the most rungs receives the live SOL pot after close.</p>
+
+    <section>
+      <h2>Enter</h2>
+      <p><strong>With SOL:</strong> request a fresh Jupiter ExactIn route, inspect its minimum TSLAx output and price impact, simulate, then approve the wallet transaction. Your wallet receives TSLAx.</p>
+      <p><strong>With TSLAx:</strong> skip conversion and build the game transaction directly. No builder holds funds or player keys.</p>
+    </section>
+    <section>
+      <h2>Climb</h2>
+      <ul>
+        <li>The game instruction calls Pump `buy_v2` and records state only after the real buy succeeds.</li>
+        <li>Observed player and curve token deltas must match the requested <strong>$XCNDL</strong> buy.</li>
+        <li>One transaction can earn at most one rung.</li>
+        <li>Sells never lower the high-water mark. Old rungs cannot be reclaimed.</li>
+        <li>If scores tie, the wallet that reached that score first remains ahead.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Settle</h2>
+      <p>After the frozen end time, anyone may invoke settlement. The full stored lamport pot is paid once to the on-chain leader. A failed settlement rolls back.</p>
+    </section>
+    <section>
+      <h2>Still to freeze</h2>
+      <p>The window, minimum buy, candle step and entry fee remain TBD until final curve replay and economic measurement. They are not launch promises yet.</p>
+    </section>
+    <section>
+      <h2>Risk and identity</h2>
+      <p><strong>$XCNDL</strong> is a game token paired with TSLAx. It is not Tesla stock or equity, and STOCK CANDLE is not affiliated with Tesla or the TSLAx issuer. TSLAx access is jurisdiction-dependent. No reward, profit, price, liquidity or route is guaranteed.</p>
+    </section>
+  </main>
+</body>
+</html>

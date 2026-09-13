@@ -1,5 +1,7 @@
 # STOCK CANDLE
 
+**Current status, 2026-09-13:** the immutable 15-minute race is closed and the 0.051 SOL prize is settled. The public site disables all entry and SOL conversion, displays the recorded winner, and composes repeatable TSLAx claims locally with MiniSol. It no longer needs a temporary transaction-builder server. Late TSLAx fees remain payable to the same on-chain winner by a wallet-signed permissionless claim. The launch/build sections below describe the completed launch history.
+
 STOCK CANDLE is a fully on-chain Solana launch race paired with TSLAx: every verified `$XCNDL` buy that crosses the next irreversible 1,000,000-token level earns one rung, and the leading wallet receives the SOL pot plus TSLAx creator-fee prize when the 15-minute window closes.
 
 ## Identity

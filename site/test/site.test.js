@@ -15,9 +15,9 @@ const publicRules = read("rules.html");
 const rules = fs.readFileSync(path.join(project, "RULES.md"), "utf8");
 
 assert.match(html, /<h1 id="pageTitle">STOCK<br>CANDLE<\/h1>/);
-assert.match(html, /Start with <strong>SOL or TSLAx<\/strong>\. Buy <strong>\$XCNDL<\/strong>/);
-assert.match(html, /Most rungs after 15 minutes wins the SOL pot and TSLAx fee prize/i);
-assert.match(html, /No TSLAx\?/i);
+assert.match(html, /launch race is complete/);
+assert.match(html, /0\.051 SOL pot was paid/);
+assert.match(html, /Race closed/i);
 assert.match(html, /1M XCNDL/);
 assert.match(html, /id="modeSol"/);
 assert.match(html, /id="modeTslax"/);
@@ -27,7 +27,9 @@ assert.match(html, /Not affiliated with Tesla/i);
 assert.doesNotMatch(html, /Tesla logo|Tesla car/i);
 
 assert.strictEqual(manifest.deployed, true);
-assert.strictEqual(manifest.tradingEnabled, true);
+assert.strictEqual(manifest.tradingEnabled, false);
+assert.strictEqual(manifest.entryPermanentlyClosed, true);
+assert.strictEqual(manifest.settlementMode, "browser");
 assert.strictEqual(manifest.programImmutable, true);
 assert.strictEqual(manifest.atomicSolEntryEnabled, false);
 assert.strictEqual(manifest.launchParameters.windowSeconds, 900);
@@ -44,7 +46,7 @@ assert.strictEqual(manifest.config, "5LN2kPUJqgAbqbDALpi1EUq2CHx84UqPszBmbtc3Brp
 assert.strictEqual(manifest.pot, "6BztA9ESeDTWN5PsQmMXa3wUTT8wpvWswW6VcAYUTVLN");
 assert.strictEqual(manifest.potQuoteAta, "EG9AbYCgksSd7Z5TViBgwY8QYE9kH2xQnU3ThcjqguPN");
 assert.strictEqual(manifest.gameAlt, "EhSkfKUZQbQTyd2uhekpsXWSfJx53ZFCBpYVquDNEBP6");
-assert.strictEqual(manifest.gameBuilderUrl, "https://angle-rotary-activated-eds.trycloudflare.com");
+assert.strictEqual(manifest.gameBuilderUrl, "");
 assert.strictEqual(manifest.tslaxMint, "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB");
 assert.strictEqual(manifest.expectedProgramSha256, "22EE4F121EC05B9C47CA32001A740FAFAFB46939A2AAF7E402D86E4A9BE29A6B");
 assert.strictEqual(manifest.telegramUrl, "https://t.me/chetx");
@@ -59,8 +61,7 @@ assert.doesNotMatch(js, /getTokenAccountBalance/);
 assert.match(js, /TSLAx prize account mint or pot authority does not match/);
 assert.match(js, /Config mint or token-program binding does not match the public manifest/);
 assert.match(js, /On-chain game rules do not match the public manifest/);
-assert.match(js, /build-close/);
-assert.match(js, /build-quote-claim/);
+assert.match(js, /CandleSettlement\.compile/);
 assert.match(js, /Settlement builder intent did not match the verified on-chain state/);
 assert.match(js, /m\.deployed === true/);
 assert.match(js, /m\.tradingEnabled === true/);
@@ -89,7 +90,7 @@ assert.match(publicRules, /The ladder<br>only goes up/);
 assert.match(publicRules, /Frozen launch rules/);
 assert.strictEqual(read("CNAME").trim(), "scandle.ratchetx.xyz");
 
-for (const file of ["index.html", "rules.html", "styles.css", "app.js", "manifest.json", "serve.js", "assets/xcndl-token.svg"]) {
+for (const file of ["index.html", "rules.html", "styles.css", "app.js", "settlement.js", "manifest.json", "serve.js", "assets/xcndl-token.svg"]) {
   assert.ok(Buffer.from(read(file), "utf8").every((byte) => byte < 128), file + " must remain ASCII");
 }
 

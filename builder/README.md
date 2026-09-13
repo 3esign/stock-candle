@@ -1,5 +1,7 @@
 # STOCK CANDLE Builder Contract
 
+**Retired after race close, 2026-09-13:** the live site now builds permissionless settlement in `site/settlement.js` and uses direct public RPC. Its manifest permanently closes entry and clears the temporary builder URL. This server remains the historical launch implementation and intentionally reports configured=false for the settled manifest. No replacement tunnel is required.
+
 The builder is a replaceable, no-custody transaction composer. It reads finalized game and Pump accounts, calls `priceNextRung`, requests current Pump/Jupiter instructions and returns an unsigned v0 transaction. It never receives a secret key.
 
 ## Routes

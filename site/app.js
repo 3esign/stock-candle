@@ -138,7 +138,7 @@ function manifestIsConfigured() {
   const shares = m.creatorFeeSharing || {};
   return Boolean(
     m.deployed === true &&
-    m.tradingEnabled === true &&
+    (m.tradingEnabled === true || (m.entryPermanentlyClosed === true && m.settlementMode === "browser")) &&
     m.programImmutable === true &&
     address.test(m.mint || "") &&
     address.test(m.programId || "") &&
@@ -148,7 +148,7 @@ function manifestIsConfigured() {
     address.test(m.gameAlt || "") &&
     address.test(m.baseTokenProgram || "") &&
     address.test(m.tslaxTokenProgram || "") &&
-    /^https:\/\//.test(m.gameBuilderUrl || "") &&
+    (m.settlementMode === "browser" || /^https:\/\//.test(m.gameBuilderUrl || "")) &&
     /^https:\/\//.test(m.xUrl || "") &&
     /^https:\/\//.test(m.telegramUrl || "") &&
     /^[0-9A-F]{64}$/.test(m.expectedProgramSha256 || "") &&
@@ -165,6 +165,21 @@ function manifestIsConfigured() {
 
 function manifestIsLaunchReady() {
   return manifestIsConfigured() && app.chainVerified;
+}
+
+function entryIsOpen() {
+  const state = app.chainState;
+  const now = Math.floor(Date.now() / 1000);
+  return Boolean(manifestIsLaunchReady() && app.manifest.tradingEnabled === true && app.manifest.entryPermanentlyClosed !== true && state && !state.closed && now >= state.startTs && now <= state.endTs);
+}
+
+function assertEntryOpen() {
+  if (!entryIsOpen()) throw new Error("This race is closed or not open. No conversion or game purchase is available.");
+}
+
+async function refreshEntryBeforeSigning() {
+  await hydrateOnChainState();
+  assertEntryOpen();
 }
 
 function atomicSolEntryEnabled() {
@@ -211,6 +226,8 @@ function decodeGameConfig(bytes) {
   const topWallet = zeroAddressAt(bytes, 92) ? "" : addressAt(bytes, 92);
   const storedWinner = zeroAddressAt(bytes, 52) ? "" : addressAt(bytes, 52);
   return {
+    configBump: bytes[1],
+    potBump: bytes[2],
     startTs: readI64(bytes, 3),
     endTs: readI64(bytes, 11),
     minimumBuyRaw: readU64(bytes, 19).toString(),
@@ -231,6 +248,7 @@ function decodeGameConfig(bytes) {
 
 function renderCountdown() {
   if (!app.chainState) return;
+  renderEntry();
   if (app.chainState.closed) {
     ui.closeState.textContent = "CLOSED";
     return;
@@ -262,7 +280,7 @@ function renderChainState() {
   const score = state.closed ? state.winnerScore : state.leaderScore;
   ui.leaderState.textContent = leader ? shorten(leader) + " / " + score + " rung" + (score === "1" ? "" : "s") : "NO LEADER";
   ui.stateExplanation.textContent = "Live values are read directly from the verified config, SOL pot and TSLAx token account. Program authority is revoked; the builder is not the source of game state.";
-  ui.chartSummary.textContent = "Live board verified: " + state.totalStrikes + " awarded rung" + (state.totalStrikes === "1" ? "" : "s") + ". The yellow line represents the next 1M XCNDL target.";
+  ui.chartSummary.textContent = "Illustration of the ladder mechanic, not trading history. Verified board: " + state.totalStrikes + " awarded rung" + (state.totalStrikes === "1" ? "" : "s") + ".";
   renderCountdown();
   renderStateActions();
 }
@@ -319,8 +337,8 @@ async function hydrateOnChainState() {
 function renderManifest() {
   const m = app.manifest;
   const ready = manifestIsLaunchReady();
-  ui.launchPill.textContent = ready ? "LIVE" : "PRE-LAUNCH";
-  ui.chartState.textContent = ready ? "LIVE READ" : "NOT LIVE";
+  ui.launchPill.textContent = ready ? (app.chainState.closed ? "RACE CLOSED" : entryIsOpen() ? "LIVE" : "RACE ENDED") : (m.deployed ? "VERIFYING" : "PRE-LAUNCH");
+  ui.chartState.textContent = "ILLUSTRATION";
   ui.chartState.classList.toggle("pending", !ready);
   ui.mintState.textContent = m.mint ? shorten(m.mint) : "PENDING";
   ui.programState.textContent = m.programId ? shorten(m.programId) : "PENDING";
@@ -371,6 +389,14 @@ function renderEntry() {
   ui.connectTop.disabled = app.busy;
   ui.quoteButton.disabled = app.busy || !eligible;
   renderStateActions();
+
+  if (!entryIsOpen()) {
+    ui.quoteButton.disabled = true;
+    ui.tradeButton.disabled = true;
+    ui.tradeButton.textContent = app.chainState && (app.chainState.closed || Date.now() / 1000 > app.chainState.endTs) ? "Race closed" : "Entry unavailable";
+    ui.amountHelp.textContent = "The 15-minute race has ended. Entry and SOL conversion are closed. Future TSLAx fee prizes still belong to the recorded winner.";
+    return;
+  }
 
   if (!launchReady) {
     ui.tradeButton.disabled = true;
@@ -424,6 +450,7 @@ function validateSolAmount() {
 }
 
 async function quoteSolToTslax() {
+  assertEntryOpen();
   const inputRaw = validateSolAmount();
   const url = new URL(app.manifest.jupiterQuoteApi);
   url.searchParams.set("inputMint", SOL_MINT);
@@ -507,6 +534,7 @@ function verifyAtomicIntent(built) {
 }
 
 async function measureNextRung() {
+  assertEntryOpen();
   const balance = await checkTslaxBalance();
   if (!manifestIsLaunchReady()) return;
   const measured = await callGameBuilder("measure", balance.requested);
@@ -525,6 +553,7 @@ async function measureNextRung() {
 async function inspectEntry() {
   setBusy(true);
   try {
+    assertEntryOpen();
     if (!ui.eligibilityCheck.checked) throw new Error("Confirm TSLAx eligibility before requesting market data.");
     if (app.mode === "sol") await quoteSolToTslax();
     else await measureNextRung();
@@ -568,6 +597,7 @@ async function walletSignAndSendBase64(base64) {
 }
 
 async function getTslaxWithSol() {
+  assertEntryOpen();
   if (!manifestIsLaunchReady()) throw new Error("Launch manifest is not ready. Spending remains disabled.");
   if (!app.wallet) throw new Error("Connect your wallet first.");
   if (!app.quote || Date.now() - app.quoteAt > MAX_QUOTE_AGE_MS) throw new Error("The route expired. Check it again.");
@@ -588,6 +618,7 @@ async function getTslaxWithSol() {
   if (swap.simulationError) throw new Error("Route builder simulation failed.");
   if (!swap.swapTransaction) throw new Error("Route builder returned no transaction.");
   await simulateSerializedTransaction(swap.swapTransaction);
+  await refreshEntryBeforeSigning();
   setStatus("Simulation passed. Check the wallet transaction carefully before approving it.", "warning");
   const signature = await walletSignAndSendBase64(swap.swapTransaction);
   app.quote = null;
@@ -598,6 +629,7 @@ async function getTslaxWithSol() {
 }
 
 async function playAtomicWithSol() {
+  assertEntryOpen();
   if (!app.wallet) throw new Error("Connect your wallet first.");
   if (!app.quote || Date.now() - app.quoteAt > MAX_QUOTE_AGE_MS) throw new Error("The route expired. Check it again.");
   let built;
@@ -613,6 +645,7 @@ async function playAtomicWithSol() {
     throw new Error("One-signature entry is unavailable for this route. Nothing was signed. Use the same checked route to get TSLAx first, then approve the rung buy. " + String(error.message || error));
   }
   setStatus("Combined SOL to TSLAx to XCNDL simulation passed. Review the single wallet approval.", "warning");
+  await refreshEntryBeforeSigning();
   const signature = await walletSignAndSendBase64(built.transaction.serializedBase64);
   app.quote = null;
   app.gameMeasure = null;
@@ -620,6 +653,7 @@ async function playAtomicWithSol() {
 }
 
 async function playWithTslax() {
+  assertEntryOpen();
   if (!manifestIsLaunchReady()) throw new Error("Launch manifest is not ready. Spending remains disabled.");
   if (!app.wallet) throw new Error("Connect your wallet first.");
   if (!app.gameMeasure || Date.now() - app.gameMeasureAt > MAX_QUOTE_AGE_MS) throw new Error("The next-rung price expired. Check it again.");
@@ -629,6 +663,7 @@ async function playWithTslax() {
     throw new Error((built.gates && built.gates.failures && built.gates.failures[0]) || "Game builder returned no signable transaction.");
   }
   await simulateSerializedTransaction(built.transaction.serializedBase64);
+  await refreshEntryBeforeSigning();
   setStatus("Game transaction simulation passed. Check the wallet details before approving it.", "warning");
   const signature = await walletSignAndSendBase64(built.transaction.serializedBase64);
   setStatus("Game transaction sent: " + shorten(signature) + ". The board will update after confirmation.", "ok");
@@ -637,6 +672,7 @@ async function playWithTslax() {
 async function trade() {
   setBusy(true);
   try {
+    assertEntryOpen();
     if (!ui.eligibilityCheck.checked) throw new Error("Confirm TSLAx eligibility first.");
     if (app.mode === "sol") {
       if (atomicSolEntryEnabled() && !app.atomicFallback) await playAtomicWithSol();
@@ -655,10 +691,13 @@ async function runSettlement(kind) {
   try {
     if (!manifestIsLaunchReady()) throw new Error("Live on-chain state is not verified.");
     if (!app.wallet) throw new Error("Connect your wallet first.");
-    const route = kind === "close" ? "build-close" : "build-quote-claim";
-    const url = new URL("/api/stock-candle/" + route, app.manifest.gameBuilderUrl);
-    url.searchParams.set("user", app.wallet);
-    const built = await fetchJson(url.toString(), { cache: "no-store" });
+    await hydrateOnChainState();
+    const latest = await rpc("getLatestBlockhash", [{ commitment: "confirmed" }]);
+    const local = CandleSettlement.compile({ manifest: app.manifest, state: app.chainState, caller: app.wallet, recentBlockhash: latest.value.blockhash, kind });
+    const built = {
+      intent: { kind, caller: app.wallet, config: app.manifest.config, winner: local.winner },
+      transaction: { serializedBase64: btoa(String.fromCharCode(...local.wire)) },
+    };
     const expectedWinner = app.chainState.closed ? app.chainState.winner : app.chainState.leader;
     if (!built.intent || built.intent.kind !== kind || built.intent.caller !== app.wallet
         || built.intent.config !== app.manifest.config || built.intent.winner !== expectedWinner) {
@@ -807,7 +846,7 @@ async function init() {
   bindEvents();
   startCanvas();
   try {
-    app.manifest = await fetchJson("manifest.json?v=launch-live-v4", { cache: "no-store" });
+    app.manifest = await fetchJson("manifest.json?v=settled-v1", { cache: "no-store" });
     app.rpcUrl = (app.manifest.rpcUrls || [])[0] || "";
     renderManifest();
     renderEntry();

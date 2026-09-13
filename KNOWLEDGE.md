@@ -2,6 +2,13 @@
 
 # Greske
 
+- 2026-09-13: Desktop QA initially expected scrollWidth to equal the viewport width. Cause: native Chrome reserved a 15-pixel vertical scrollbar gutter. Remedy: require scrollWidth <= viewport width and separately reject any visible element extending outside it.
+
+- 2026-09-13: A raw-byte comparison between MiniSol and the SDK failed on equivalent settlement messages. Cause: both compilers use valid but different ordering for equally privileged accounts. Remedy: deserialize both with the SDK and compare every instruction, account privilege, fee payer and blockhash; do not confuse a different account index layout with a different transaction.
+
+- 2026-09-13: The live UI treated a configured deployment as an open race and still allowed the first SOL-to-TSLAx purchase after close. Cause: entry eligibility did not check the immutable config's start/end/closed fields. Remedy: block quotes and every purchase entry point before network/signing when the round is closed, expired, unstarted or unverified; recheck immediately before a signature.
+- 2026-09-13: Explicit browser Accept-Encoding headers made GitHub CLI return invalid UTF-8. Cause: gh does not automatically decompress when this header is manually supplied. Remedy: derive headers through incognito but omit Accept-Encoding for gh and let its transport negotiate compression.
+
 - Radni simbol `$CANDLE` je već višestruko korišćen na Pump-u, a CandleX je postojeće ime u finansijskom/trading prostoru. Uzrok: generičko ime bez collision provere. Lek: javni identitet je STOCK CANDLE / `$XCNDL`, dok se Candle Ladder koristi samo kao ime mehanike.
 - `project_kit init` je napravio fajlove, ali nije upisao `data/project_kits.jsonl`. Uzrok još nije potvrđen. Lek: registraciju proveriti odvojeno i nikad ne izjednačiti postojanje foldera sa uspešnim upisom registra.
 - Browser QA je prijavio neodredjen `Uncaught` kada je stari lokalni server prestao da radi. Uzrok nije bio DOM ni Canvas nego error stranica bez `ladderCanvas`. Lek: pre tumacenja CDP greske proveriti origin i podici cist server.
@@ -16,6 +23,8 @@
 - PublicNode dozvoljava `getAccountInfo` i `getBalance`, ali indeksirani `getTokenAccountBalance` traži lični token. Lek: Token-2022 pot ATA se čita kao običan account, pa browser lokalno proverava token-program owner, TSLAx mint, pot authority i u64 amount; live tabla ne zavisi od indeksiranog RPC servisa.
 
 # Iskustva
+
+- 2026-09-13: The launch builder process had exited while its quick-tunnel URL remained published. A settled immutable race only needs its read-only board and repeatable winner claim; both can work from the static site with a locally composed transaction and no temporary builder.
 
 - Jasna hijerarhija je STOCK CANDLE -> `$XCNDL` -> Candle Ladder -> TSLAx. Posetilac mora da vidi sve četiri veze u prvom viewportu.
 - TSLAx-first igra stvara nepotrebnu onboarding rupu ako korisnik mora sam da traži quote asset. Najkraći proizvodni put je wallet-signed SOL -> TSLAx kupovina u sajtu, uz direktan TSLAx režim za postojeće vlasnike.
@@ -67,3 +76,4 @@
 - Launch wallet `ExBhta...TFgE` je posle Semirovog transfera pročitan na `0.494485737 SOL`, iznad poslednje izmerene preporuke `0.479290218 SOL`; ovo je stanje pre bilo kog STOCK CANDLE potpisa ili slanja.
 - Finalni Pump metadata URI je `https://ipfs.io/ipfs/bafkreihsmhrmjdnqmzosbfor4mzef3rxhgp3f7zv7ciw7eefagczjx3eqm`; Pinata gateway je nezavisno vratio tacan naziv, simbol, opis, image CID, X, Telegram i website. Direktni `ipfs.io` fetch sa ovog tela je Cloudflare-challenge 403, sto nije nestanak sadrzaja.
 - TSLAx extension atom je neposredno pred launch ponovo prosao: mint nije paused, nema TransferFeeConfig, NonTransferable ni hook extra-account; aktuelni 478-byte ATA rent je `0.00307848 SOL`.
+- 2026-09-13: Late distribution arrived during closeout: the TSLAx pot changed from zero to 0.11261659 between finalized reads. Both mainnet simulation and browser simulation then passed the local claim. The upstream Pump TSLAx vault retained 1 raw unit, the AMM vault zero. A previously empty pot is a timestamped observation, not a permanent settled balance.

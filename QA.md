@@ -1,5 +1,14 @@
 # STOCK CANDLE - Pre-launch QA
 
+## Settled-race closeout - 2026-09-13
+
+- `node site/test/settlement.test.js`: exact instruction/account/signature equivalence to the installed Solana SDK for both settlement actions and caller=winner/caller=third-party; invalid bindings, empty prize, wrong winner and duplicate close rejected. Closed, expired, not-started and unverified entry paths issue no network request or signature.
+- `node site/test/settled-browser-qa.js`: real desktop/mobile Chrome reads current mainnet config, displays RACE CLOSED, rejects all entry paths with a simulated connected wallet, has no horizontal overflow and makes no request to the retired builder. A mock provider stops execution before any real wallet approval; it is not an independent player's send proof.
+- Existing site, rung, builder contract and admin layout tests pass. The retired builder correctly reports configured=false; static settlement remains independently available.
+- Current mainnet unsigned simulation of the browser-produced TSLAx claim succeeds with Token-2022 TransferChecked. Nothing signed or sent. A real payout still requires a wallet signature; later fees can accrue again.
+
+Historical launch QA follows. The former independent-entry and atomic-SOL proofs were not observed while the immutable round was open; they cannot be retroactively completed or claimed for this closed race.
+
 Final launch verification: 2026-09-13. Mainnet deployment, token creation, initialization, fee lock, ALT freeze, founder entry/transfer and program authority revocation are confirmed.
 
 ## Static Gates

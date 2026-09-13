@@ -82,7 +82,7 @@ async function main() {
     launchParameters: { ...readyManifest.launchParameters, windowSeconds: 901 },
   }), false);
 
-  assert.strictEqual(publicManifest().configured, true);
+  assert.strictEqual(publicManifest().configured, false);
   const server = createServer();
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
@@ -91,7 +91,7 @@ async function main() {
     const health = await fetch(`http://127.0.0.1:${port}/health`);
     const healthBody = await health.json();
     assert.strictEqual(health.status, 200);
-    assert.strictEqual(healthBody.configured, true);
+    assert.strictEqual(healthBody.configured, false);
     assert.strictEqual(healthBody.signs, false);
     assert.strictEqual(healthBody.sends, false);
     assert.strictEqual(healthBody.program, publicManifest().manifest.programId);

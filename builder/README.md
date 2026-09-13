@@ -15,3 +15,15 @@ Every build response must include `gates.ok`, `gates.failures`, `intent` and `tr
 Settlement intents echo `kind`, `caller`, `config` and the current on-chain `winner`. The browser compares them with its own config-account read before simulation. Quote-prize claims remain repeatable after close so later Pump creator-fee distributions can only go to the recorded winner.
 
 The manifest flag `atomicSolEntryEnabled` stays false until a final-mint transaction passes packet-size, account-derivation, amount-sufficiency and full runtime simulation gates. The site falls back to two wallet approvals without taking custody.
+
+## Local launch service
+
+`server.js` implements all five routes with the Node standard-library HTTP server. It loads the already-installed Solana/Pump libraries from the shared toolchain, never reads a keypair, and re-reads `site/manifest.json` on every request. Until final CA/config/pot/ALT values are present, fee sharing is locked, and `deployed` plus `tradingEnabled` are true, `/health` reports `configured:false` and every transaction route fails closed.
+
+Run it during rehearsal or the short launch window:
+
+```powershell
+node builder/server.js 8792
+```
+
+The service also requires the published game ALT to have `authority:null`. Every returned transaction is simulated by RPC before its bytes leave the builder, and the browser simulates the same bytes again before opening the wallet.

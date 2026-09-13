@@ -19,3 +19,5 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T13:57:00+02:00 · Codex/Svemir · prvi viewport, rules, metadata i X draft uskladjeni sa SOL+TSLAx nagradom; dodat direktan RPC readback i permissionless settlement UI ugovor · ok
 - 2026-09-13T13:58:00+02:00 · Codex/Svemir · static, builder i browser QA ponovo zeleni; desktop/mobilni overflow 0, pre-launch fail-closed, live Jupiter quote radi · ok
 - 2026-09-13T14:02:00+02:00 · Codex/Svemir · Semir izabrao konacni javni domen `scandle.ratchetx.xyz`; CNAME, metadata, OG i X copy uskladjeni pre DNS-a · ok
+- 2026-09-13T14:15:00+02:00 · Codex/Svemir · DNS CNAME `scandle -> 3esign.github.io` javno potvrdjen sa TTL 600; Telegram `https://t.me/chetx` zamrznut u sajtu i metadata · ok
+- 2026-09-13T14:20:00+02:00 · Codex/Svemir · izgradjen no-key lokalni builder za measure/direct/atomic/close/quote-claim; prazan manifest vraca `configured:false` i blokira build · ok

@@ -25,6 +25,7 @@
   "config": "",
   "pot": "",
   "potQuoteAta": "",
+  "gameAlt": "",
   "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
   "tslaxTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
   "expectedProgramSha256": "6201C68D44D49E478D713CDEC5C405D8480D9C778C8C48900289F247D630E946",
@@ -36,6 +37,6 @@
     "https://api.mainnet-beta.solana.com"
   ],
   "xUrl": "",
-  "telegramUrl": "",
+  "telegramUrl": "https://t.me/chetx",
   "xstocksInfoUrl": "https://xstocks.com/"
 }

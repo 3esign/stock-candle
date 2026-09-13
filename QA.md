@@ -14,6 +14,10 @@ Command: `node builder/rung.test.js`
 
 Result: `STOCK_CANDLE_RUNG_PRICING_PASS`. First rung, ordinary next rung, sell recovery, already-crossed target, budget rejection and invalid-u64 cases pass.
 
+Command: `node builder/server.test.js`
+
+Result: `STOCK_CANDLE_BUILDER_FAIL_CLOSED_PASS`. The exact config offsets decode, health discloses no signing/sending capability, and transaction building returns `503 launch_manifest_not_configured` while final addresses are empty.
+
 ## Browser Gates
 
 Command: `node site/test/browser-qa.js http://127.0.0.1:8791/`

@@ -14,7 +14,7 @@ No deploy or irreversible transaction until every box is independently verified.
 - [x] SOL settlement, repeatable TSLAx-prize claim, rollback, sell/rebuy, wrong-account and tie tests pass from release source.
 - [ ] Site mobile/desktop visual QA and no-overlap checks pass.
 - [ ] X post URL supplied and frozen in metadata.
-- [ ] Telegram URL supplied by Semir and frozen in metadata.
+- [x] Telegram URL supplied by Semir and frozen in metadata (`https://t.me/chetx`).
 - [ ] Exact SOL/TSLAx funding requirement freshly measured.
 - [ ] Semir explicitly approves token creation, program deploy, init, funding and any authority revocation.
 - [ ] Post-deploy readback publishes CA, program, config, pot, signatures and honest authority state.

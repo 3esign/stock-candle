@@ -1,0 +1,72 @@
+"use strict";
+
+const assert = require("assert");
+const { once } = require("events");
+const {
+  CONFIG_LEN,
+  U64_MAX,
+  createServer,
+  decodeConfig,
+  publicManifest,
+} = require("./server.js");
+
+function writeKey(buffer, offset, fill) {
+  buffer.fill(fill, offset, offset + 32);
+}
+
+async function main() {
+  const data = Buffer.alloc(CONFIG_LEN);
+  data[0] = 1;
+  data[1] = 254;
+  data[2] = 253;
+  data.writeBigInt64LE(1000n, 3);
+  data.writeBigInt64LE(1900n, 11);
+  data.writeBigUInt64LE(1_000_000_000_000n, 19);
+  data.writeBigUInt64LE(1_000_000n, 27);
+  data.writeBigUInt64LE(3n, 35);
+  data.writeBigUInt64LE(2n, 124);
+  data.writeBigUInt64LE(1_000_000_000_000n, 300);
+  data.writeBigUInt64LE(U64_MAX, 308);
+  writeKey(data, 92, 4);
+  writeKey(data, 236, 5);
+  writeKey(data, 268, 6);
+  writeKey(data, 316, 7);
+  writeKey(data, 348, 8);
+  const decoded = decodeConfig({ data });
+  assert.strictEqual(decoded.configBump, 254);
+  assert.strictEqual(decoded.potBump, 253);
+  assert.strictEqual(decoded.endTs - decoded.startTs, 900);
+  assert.strictEqual(decoded.minimumBuyRaw, 1_000_000_000_000n);
+  assert.strictEqual(decoded.entryFeeLamports, 1_000_000n);
+  assert.strictEqual(decoded.leaderScore, 2n);
+  assert.strictEqual(decoded.lastAwardedBalanceRaw, U64_MAX);
+
+  assert.strictEqual(publicManifest().configured, false);
+  const server = createServer();
+  server.listen(0, "127.0.0.1");
+  await once(server, "listening");
+  const port = server.address().port;
+  try {
+    const health = await fetch(`http://127.0.0.1:${port}/health`);
+    const healthBody = await health.json();
+    assert.strictEqual(health.status, 200);
+    assert.strictEqual(healthBody.configured, false);
+    assert.strictEqual(healthBody.signs, false);
+    assert.strictEqual(healthBody.sends, false);
+
+    const measure = await fetch(`http://127.0.0.1:${port}/api/stock-candle/measure?user=HXFDaHyZ3i477z1BakiTWZg9UQN8rcreruuv9ifC1HvM&maxQuoteAmountRaw=1500000`);
+    const measureBody = await measure.json();
+    assert.strictEqual(measure.status, 503);
+    assert.strictEqual(measureBody.error, "launch_manifest_not_configured");
+  } finally {
+    server.close();
+    await once(server, "close");
+  }
+
+  console.log("OK: STOCK_CANDLE_BUILDER_FAIL_CLOSED_PASS");
+}
+
+main().catch((error) => {
+  console.error(error.stack || error);
+  process.exitCode = 1;
+});

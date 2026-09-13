@@ -26,7 +26,7 @@ STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Te
 | Prize path | Full SOL pot closes to the leader; full TSLAx pot balance and later fee arrivals remain claimable by that same winner |
 | Public product | This project owns the site, public rules, metadata, launch copy and QA |
 | Mainnet launch | Not deployed; no `$XCNDL` mint or program CA exists yet |
-| Social metadata | Final X post and Telegram URL are required before metadata is frozen |
+| Social metadata | Telegram is frozen at `https://t.me/chetx`; final X post URL remains required |
 
 ## Build Order
 

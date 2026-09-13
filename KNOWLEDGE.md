@@ -17,6 +17,7 @@
 - Pump creator-fee share za TSLAx-pair stize kao TSLAx u pot ATA, ne kao lamports. SOL-only close bi ostavio deo obecane nagrade van pobednikovog puta. Program zato pamti pobednika pri close-u i dozvoljava ponovljiv permissionless TSLAx claim samo tom odredistu, ukljucujuci kasne fee distribucije.
 - Svezi pocetni Pump replay daje 1M XCNDL oko 0.01101093 TSLAx, 2M oko 0.02204241, 5M oko 0.05526078 i 10M oko 0.1110414 pre 1% slippage zastite. Korak 1M je jedini od kandidata koji razumno staje u podrazumevani 0.05 SOL onboarding pri trenutnoj ruti.
 - Live tabla ne sme verovati samo javnom JSON-u. Browser pre otkljucavanja proverava owner configa, oba minta, oba token programa i on-chain window/minimum/step/fee protiv manifesta.
+- Kratak launch ne zahteva custody ni privatni RPC kao deo pravila: lokalni no-key builder moze privremeno da bude dostupan kroz HTTPS tunnel, dok program i browser ponovo proveravaju njegov izlaz. Builder mora objaviti `signs:false`, `sends:false` i ostati `configured:false` do finalnih adresa i zamrznutog ALT-a.
 
 # Izvori
 
@@ -34,6 +35,7 @@
 - Razdvojiti trustless settlement od zamenljivog route-builder interfejsa.
 - Izračunati najmanji base buy koji prelazi monotonu granicu i odbiti build ako quote prelazi igračev TSLAx budžet.
 - Dekodirati kompaktan 380-bajtni on-chain config u browseru i fail-closed povezati ga sa javnim manifestom.
+- Sastaviti i dvaput simulirati direct/atomic/settlement v0 transakcije bez citanja keypaira: prvi put u builderu, drugi put u browseru pre wallet dijaloga.
 
 # Odluke
 
@@ -45,3 +47,4 @@
 - Launch pravila su 15 minuta, 1M XCNDL minimum i korak, 0.001 SOL fee samo za nagradjeni rung i 0.05 SOL pocetni pot.
 - Pobednik dobija ceo SOL pot i sav TSLAx u pot ATA; 66.33% Pump creator-fee udela ide pot PDA-u, 33.67% creator walletu, uz planirano trajno zakljucavanje fee-sharing konfiguracije.
 - Sajt, javni materijali i builder ugovor zavrsavaju se pre bilo kog deploya; pravi XCNDL CA se objavljuje poslednji.
+- Telegram launch URL je `https://t.me/chetx`; DNS CNAME za `scandle.ratchetx.xyz` je 2026-09-13 javno procitan kao `3esign.github.io` sa TTL 600.

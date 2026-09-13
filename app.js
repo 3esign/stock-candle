@@ -143,6 +143,7 @@ function manifestIsConfigured() {
     address.test(m.config || "") &&
     address.test(m.pot || "") &&
     address.test(m.potQuoteAta || "") &&
+    address.test(m.gameAlt || "") &&
     address.test(m.baseTokenProgram || "") &&
     address.test(m.tslaxTokenProgram || "") &&
     /^https:\/\//.test(m.gameBuilderUrl || "") &&

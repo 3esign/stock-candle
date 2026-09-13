@@ -18,6 +18,8 @@
 - Svezi pocetni Pump replay daje 1M XCNDL oko 0.01101093 TSLAx, 2M oko 0.02204241, 5M oko 0.05526078 i 10M oko 0.1110414 pre 1% slippage zastite. Korak 1M je jedini od kandidata koji razumno staje u podrazumevani 0.05 SOL onboarding pri trenutnoj ruti.
 - Live tabla ne sme verovati samo javnom JSON-u. Browser pre otkljucavanja proverava owner configa, oba minta, oba token programa i on-chain window/minimum/step/fee protiv manifesta.
 - Kratak launch ne zahteva custody ni privatni RPC kao deo pravila: lokalni no-key builder moze privremeno da bude dostupan kroz HTTPS tunnel, dok program i browser ponovo proveravaju njegov izlaz. Builder mora objaviti `signs:false`, `sends:false` i ostati `configured:false` do finalnih adresa i zamrznutog ALT-a.
+- DNS CNAME moze javno proraditi pre GitHub Pages custom-domain TLS sertifikata. Launch link se ne objavljuje dok direktan HTTPS fetch ne vrati 200 sa ispravnim host sertifikatom; HTTP 200 sam nije dovoljan dokaz spremnosti.
+- Builder manifest gate mora proveravati zamrznutu ekonomiju, X/Telegram URL, artefact hash i aktivan zamrznut ALT, ne samo prisustvo adresa i `deployed=true`.
 
 # Izvori
 

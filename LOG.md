@@ -21,3 +21,5 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T14:02:00+02:00 · Codex/Svemir · Semir izabrao konacni javni domen `scandle.ratchetx.xyz`; CNAME, metadata, OG i X copy uskladjeni pre DNS-a · ok
 - 2026-09-13T14:15:00+02:00 · Codex/Svemir · DNS CNAME `scandle -> 3esign.github.io` javno potvrdjen sa TTL 600; Telegram `https://t.me/chetx` zamrznut u sajtu i metadata · ok
 - 2026-09-13T14:20:00+02:00 · Codex/Svemir · izgradjen no-key lokalni builder za measure/direct/atomic/close/quote-claim; prazan manifest vraca `configured:false` i blokira build · ok
+- 2026-09-13T14:18:00+02:00 · Codex/Svemir · builder launch gate vezan za tacna pravila, oba social URL-a, artefact hash i aktivan zamrznut ALT; site/static/builder/browser QA ponovo prolaze · ok
+- 2026-09-13T14:19:00+02:00 · Codex/Svemir · javni DNS potvrdjen, HTTP manifest radi, ali GitHub Pages HTTPS jos vraca pogresan sertifikat; X objava zadrzana do ispravnog TLS-a · blocked-external

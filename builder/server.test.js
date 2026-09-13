@@ -7,6 +7,7 @@ const {
   U64_MAX,
   createServer,
   decodeConfig,
+  manifestConfigured,
   publicManifest,
 } = require("./server.js");
 
@@ -40,6 +41,45 @@ async function main() {
   assert.strictEqual(decoded.entryFeeLamports, 1_000_000n);
   assert.strictEqual(decoded.leaderScore, 2n);
   assert.strictEqual(decoded.lastAwardedBalanceRaw, U64_MAX);
+
+  const readyManifest = {
+    product: "STOCK CANDLE",
+    symbol: "XCNDL",
+    network: "mainnet-beta",
+    siteUrl: "https://scandle.ratchetx.xyz/",
+    deployed: true,
+    tradingEnabled: true,
+    atomicSolEntryEnabled: true,
+    launchParameters: {
+      windowSeconds: 900,
+      minimumBaseAmountRaw: "1000000000000",
+      rungStepRaw: "1000000000000",
+      successfulRungFeeLamports: "1000000",
+      initialPotLamports: "50000000",
+      tieBreak: "first-to-score",
+    },
+    creatorFeeSharing: { potShareBps: 6633, creatorShareBps: 3367, lockedOnChain: true },
+    tslaxMint: "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+    mint: "11111111111111111111111111111111",
+    programId: "11111111111111111111111111111111",
+    config: "11111111111111111111111111111111",
+    pot: "11111111111111111111111111111111",
+    potQuoteAta: "11111111111111111111111111111111",
+    gameAlt: "11111111111111111111111111111111",
+    baseTokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+    tslaxTokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+    expectedProgramSha256: "6201C68D44D49E478D713CDEC5C405D8480D9C778C8C48900289F247D630E946",
+    gameBuilderUrl: "https://builder.example.test",
+    xUrl: "https://x.com/SonyxEth/status/123456789",
+    telegramUrl: "https://t.me/chetx",
+  };
+  assert.strictEqual(manifestConfigured(readyManifest), true);
+  assert.strictEqual(manifestConfigured({ ...readyManifest, xUrl: "" }), false);
+  assert.strictEqual(manifestConfigured({ ...readyManifest, atomicSolEntryEnabled: false }), false);
+  assert.strictEqual(manifestConfigured({
+    ...readyManifest,
+    launchParameters: { ...readyManifest.launchParameters, windowSeconds: 901 },
+  }), false);
 
   assert.strictEqual(publicManifest().configured, false);
   const server = createServer();

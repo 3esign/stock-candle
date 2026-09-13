@@ -54,6 +54,7 @@ const MAX_BODY_BYTES = 1_000_000;
 const SLIPPAGE_BPS = 100;
 const U64_MAX = (1n << 64n) - 1n;
 const CONFIG_LEN = 380;
+const EXPECTED_PROGRAM_SHA256 = "6201C68D44D49E478D713CDEC5C405D8480D9C778C8C48900289F247D630E946";
 const ALLOWED_ORIGINS = new Set([
   "https://scandle.ratchetx.xyz",
   "http://127.0.0.1:8791",
@@ -74,9 +75,10 @@ function makeConnection() {
   });
 }
 
-function publicManifest() {
-  const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, "utf8"));
+function manifestConfigured(manifest) {
   const address = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+  const rules = manifest.launchParameters || {};
+  const shares = manifest.creatorFeeSharing || {};
   const requiredAddresses = [
     manifest.mint,
     manifest.programId,
@@ -87,11 +89,33 @@ function publicManifest() {
     manifest.baseTokenProgram,
     manifest.tslaxTokenProgram,
   ];
-  const configured = manifest.deployed === true
+  return manifest.product === "STOCK CANDLE"
+    && manifest.symbol === "XCNDL"
+    && manifest.network === "mainnet-beta"
+    && manifest.siteUrl === "https://scandle.ratchetx.xyz/"
+    && manifest.deployed === true
     && manifest.tradingEnabled === true
-    && manifest.creatorFeeSharing?.lockedOnChain === true
-    && requiredAddresses.every((value) => address.test(value || ""));
-  return { manifest, configured };
+    && manifest.atomicSolEntryEnabled === true
+    && manifest.tslaxMint === TSLAX_MINT.toBase58()
+    && requiredAddresses.every((value) => address.test(value || ""))
+    && /^https:\/\//.test(manifest.gameBuilderUrl || "")
+    && /^https:\/\/x\.com\/.+\/status\/\d+/.test(manifest.xUrl || "")
+    && manifest.telegramUrl === "https://t.me/chetx"
+    && manifest.expectedProgramSha256 === EXPECTED_PROGRAM_SHA256
+    && rules.windowSeconds === 900
+    && rules.minimumBaseAmountRaw === "1000000000000"
+    && rules.rungStepRaw === "1000000000000"
+    && rules.successfulRungFeeLamports === "1000000"
+    && rules.initialPotLamports === "50000000"
+    && rules.tieBreak === "first-to-score"
+    && shares.potShareBps === 6633
+    && shares.creatorShareBps === 3367
+    && shares.lockedOnChain === true;
+}
+
+function publicManifest() {
+  const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, "utf8"));
+  return { manifest, configured: manifestConfigured(manifest) };
 }
 
 function connectionError(message) {
@@ -222,6 +246,9 @@ async function loadGameAlt(connection, manifest) {
   const result = await retry("game_alt_read", () => connection.getAddressLookupTable(new PublicKey(manifest.gameAlt)));
   if (!result.value) throw connectionError("game_alt_missing");
   if (result.value.state.authority) throw connectionError("game_alt_not_frozen");
+  if (BigInt(result.value.state.deactivationSlot.toString()) !== U64_MAX) {
+    throw connectionError("game_alt_not_active");
+  }
   return result.value;
 }
 
@@ -723,6 +750,7 @@ module.exports = {
   U64_MAX,
   createServer,
   decodeConfig,
+  manifestConfigured,
   publicManifest,
   stateMeasure,
 };

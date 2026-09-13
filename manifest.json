@@ -2,7 +2,7 @@
   "product": "STOCK CANDLE",
   "symbol": "XCNDL",
   "network": "mainnet-beta",
-  "siteUrl": "https://stockcandle.ratchetx.xyz/",
+  "siteUrl": "https://scandle.ratchetx.xyz/",
   "deployed": false,
   "tradingEnabled": false,
   "atomicSolEntryEnabled": false,

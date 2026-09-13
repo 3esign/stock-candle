@@ -243,8 +243,44 @@ async function main() {
         }
       }));
     })()`);
+    const hydrateProbe = await evaluate(cdp, `(async () => {
+      try {
+        await hydrateOnChainState();
+        return { ok: true, rpcUrl: app.rpcUrl, chainVerified: app.chainVerified };
+      } catch (error) {
+        return {
+          ok: false,
+          name: error?.name || "",
+          message: error?.message || "",
+          string: String(error),
+          json: JSON.stringify(error),
+          stack: error?.stack || ""
+        };
+      }
+    })()`);
+    const rpcMethodProbe = await evaluate(cdp, `(async () => {
+      const url = "https://solana-rpc.publicnode.com";
+      const calls = [
+        ["getAccountInfo", ["5LN2kPUJqgAbqbDALpi1EUq2CHx84UqPszBmbtc3Brp2", { encoding: "base64", commitment: "confirmed" }]],
+        ["getBalance", ["6BztA9ESeDTWN5PsQmMXa3wUTT8wpvWswW6VcAYUTVLN", { commitment: "confirmed" }]],
+        ["getTokenAccountBalance", ["EG9AbYCgksSd7Z5TViBgwY8QYE9kH2xQnU3ThcjqguPN", { commitment: "confirmed" }]]
+      ];
+      return Promise.all(calls.map(async ([method, params]) => {
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ jsonrpc: "2.0", id: method, method, params })
+          });
+          const body = await response.json();
+          return { method, status: response.status, ok: Boolean(body.result), error: body.error?.message || "" };
+        } catch (error) {
+          return { method, status: 0, ok: false, error: String(error?.message || error) };
+        }
+      }));
+    })()`);
 
-    console.log(JSON.stringify({ desktop, mobile, uiQuote, cors, rpcProbe }, null, 2));
+    console.log(JSON.stringify({ desktop, mobile, uiQuote, cors, rpcProbe, hydrateProbe, rpcMethodProbe }, null, 2));
     for (const metrics of [desktop, mobile]) {
       assert.strictEqual(metrics.scrollWidth, metrics.innerWidth, JSON.stringify(metrics.overflow));
       assert.deepStrictEqual(metrics.overflow, []);

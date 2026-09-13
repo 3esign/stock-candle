@@ -139,6 +139,7 @@ function manifestIsConfigured() {
   return Boolean(
     m.deployed === true &&
     m.tradingEnabled === true &&
+    m.programImmutable === true &&
     address.test(m.mint || "") &&
     address.test(m.programId || "") &&
     address.test(m.config || "") &&
@@ -260,7 +261,7 @@ function renderChainState() {
   const leader = state.closed ? state.winner : state.leader;
   const score = state.closed ? state.winnerScore : state.leaderScore;
   ui.leaderState.textContent = leader ? shorten(leader) + " / " + score + " rung" + (score === "1" ? "" : "s") : "NO LEADER";
-  ui.stateExplanation.textContent = "Live values are read directly from the verified config, SOL pot and TSLAx token account. The builder is not the source of game state.";
+  ui.stateExplanation.textContent = "Live values are read directly from the verified config, SOL pot and TSLAx token account. Program authority is revoked; the builder is not the source of game state.";
   ui.chartSummary.textContent = "Live board verified: " + state.totalStrikes + " awarded rung" + (state.totalStrikes === "1" ? "" : "s") + ". The yellow line represents the next 1M XCNDL target.";
   renderCountdown();
   renderStateActions();
@@ -272,13 +273,23 @@ async function hydrateOnChainState() {
   const [configResult, potResult, prizeResult] = await Promise.all([
     rpc("getAccountInfo", [app.manifest.config, { encoding: "base64", commitment: "confirmed" }]),
     rpc("getBalance", [app.manifest.pot, { commitment: "confirmed" }]),
-    rpc("getTokenAccountBalance", [app.manifest.potQuoteAta, { commitment: "confirmed" }]),
+    rpc("getAccountInfo", [app.manifest.potQuoteAta, { encoding: "base64", commitment: "confirmed" }]),
   ]);
   if (!configResult || !configResult.value || configResult.value.owner !== app.manifest.programId) {
     throw new Error("Config account owner does not match the published game program.");
   }
+  if (!prizeResult || !prizeResult.value || prizeResult.value.owner !== app.manifest.tslaxTokenProgram) {
+    throw new Error("TSLAx prize account owner does not match Token-2022.");
+  }
   const bytes = bytesFromBase64(configResult.value.data[0]);
   const decoded = decodeGameConfig(bytes);
+  const prizeBytes = bytesFromBase64(prizeResult.value.data[0]);
+  if (prizeBytes.length < 72
+      || addressAt(prizeBytes, 0) !== app.manifest.tslaxMint
+      || addressAt(prizeBytes, 32) !== app.manifest.pot) {
+    throw new Error("TSLAx prize account mint or pot authority does not match the public manifest.");
+  }
+  const prizeRaw = readU64(prizeBytes, 64).toString();
   if (decoded.baseMint !== app.manifest.mint
       || decoded.baseTokenProgram !== app.manifest.baseTokenProgram
       || decoded.quoteMint !== app.manifest.tslaxMint
@@ -295,10 +306,11 @@ async function hydrateOnChainState() {
   app.chainState = {
     ...decoded,
     potLamports: String(potResult.value),
-    prizeRaw: prizeResult.value.amount,
-    prizeUi: prizeResult.value.uiAmountString || rawToDecimal(prizeResult.value.amount, prizeResult.value.decimals),
+    prizeRaw,
+    prizeUi: rawToDecimal(prizeRaw, 8),
   };
   app.chainVerified = true;
+  setStateStatus("Live config, SOL pot and TSLAx prize account verified directly on Solana.", "ok");
   renderManifest();
   renderChainState();
   renderEntry();
@@ -795,7 +807,7 @@ async function init() {
   bindEvents();
   startCanvas();
   try {
-    app.manifest = await fetchJson("manifest.json?v=launch-live-v2", { cache: "no-store" });
+    app.manifest = await fetchJson("manifest.json?v=launch-live-v4", { cache: "no-store" });
     app.rpcUrl = (app.manifest.rpcUrls || [])[0] || "";
     renderManifest();
     renderEntry();

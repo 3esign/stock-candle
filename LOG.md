@@ -23,3 +23,5 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T14:20:00+02:00 · Codex/Svemir · izgradjen no-key lokalni builder za measure/direct/atomic/close/quote-claim; prazan manifest vraca `configured:false` i blokira build · ok
 - 2026-09-13T14:18:00+02:00 · Codex/Svemir · builder launch gate vezan za tacna pravila, oba social URL-a, artefact hash i aktivan zamrznut ALT; site/static/builder/browser QA ponovo prolaze · ok
 - 2026-09-13T14:19:00+02:00 · Codex/Svemir · javni DNS potvrdjen, HTTP manifest radi, ali GitHub Pages HTTPS jos vraca pogresan sertifikat; X objava zadrzana do ispravnog TLS-a · blocked-external
+- 2026-09-13T14:44:00+02:00 · Codex/Svemir · zatvoren prefunded-PDA DoS za config i player record; novi SBF 30,648 B / `22EE4F12...29A6B`, WSL LiteSVM 11/11 · ok
+- 2026-09-13T14:45:00+02:00 · Codex/Svemir · ponovljeni static i packet atomi: legacy 1,166 B; najnoviji SOL ulaz 1,039 B sa 193 B rezerve; nista potpisano ni poslato · ok

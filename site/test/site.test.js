@@ -45,6 +45,7 @@ assert.strictEqual(manifest.potQuoteAta, "");
 assert.strictEqual(manifest.gameAlt, "");
 assert.strictEqual(manifest.gameBuilderUrl, "");
 assert.strictEqual(manifest.tslaxMint, "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB");
+assert.strictEqual(manifest.expectedProgramSha256, "22EE4F121EC05B9C47CA32001A740FAFAFB46939A2AAF7E402D86E4A9BE29A6B");
 assert.strictEqual(manifest.telegramUrl, "https://t.me/chetx");
 
 assert.match(js, /function manifestIsLaunchReady\(\)/);

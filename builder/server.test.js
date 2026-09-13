@@ -68,14 +68,14 @@ async function main() {
     gameAlt: "11111111111111111111111111111111",
     baseTokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
     tslaxTokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
-    expectedProgramSha256: "6201C68D44D49E478D713CDEC5C405D8480D9C778C8C48900289F247D630E946",
+    expectedProgramSha256: "22EE4F121EC05B9C47CA32001A740FAFAFB46939A2AAF7E402D86E4A9BE29A6B",
     gameBuilderUrl: "https://builder.example.test",
     xUrl: "https://x.com/SonyxEth/status/123456789",
     telegramUrl: "https://t.me/chetx",
   };
   assert.strictEqual(manifestConfigured(readyManifest), true);
   assert.strictEqual(manifestConfigured({ ...readyManifest, xUrl: "" }), false);
-  assert.strictEqual(manifestConfigured({ ...readyManifest, atomicSolEntryEnabled: false }), false);
+  assert.strictEqual(manifestConfigured({ ...readyManifest, atomicSolEntryEnabled: false }), true);
   assert.strictEqual(manifestConfigured({
     ...readyManifest,
     launchParameters: { ...readyManifest.launchParameters, windowSeconds: 901 },

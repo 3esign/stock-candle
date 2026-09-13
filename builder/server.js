@@ -54,7 +54,7 @@ const MAX_BODY_BYTES = 1_000_000;
 const SLIPPAGE_BPS = 100;
 const U64_MAX = (1n << 64n) - 1n;
 const CONFIG_LEN = 380;
-const EXPECTED_PROGRAM_SHA256 = "6201C68D44D49E478D713CDEC5C405D8480D9C778C8C48900289F247D630E946";
+const EXPECTED_PROGRAM_SHA256 = "22EE4F121EC05B9C47CA32001A740FAFAFB46939A2AAF7E402D86E4A9BE29A6B";
 const ALLOWED_ORIGINS = new Set([
   "https://scandle.ratchetx.xyz",
   "http://127.0.0.1:8791",
@@ -95,7 +95,6 @@ function manifestConfigured(manifest) {
     && manifest.siteUrl === "https://scandle.ratchetx.xyz/"
     && manifest.deployed === true
     && manifest.tradingEnabled === true
-    && manifest.atomicSolEntryEnabled === true
     && manifest.tslaxMint === TSLAX_MINT.toBase58()
     && requiredAddresses.every((value) => address.test(value || ""))
     && /^https:\/\//.test(manifest.gameBuilderUrl || "")
@@ -261,6 +260,16 @@ async function readState(user) {
   const quoteTokenProgram = new PublicKey(manifest.tslaxTokenProgram);
   const [configPda, configBump] = pda([Buffer.from("candle_config"), mint.toBuffer()], programId);
   const [potPda, potBump] = pda([Buffer.from("candle_pot"), configPda.toBuffer()], programId);
+  const expectedPotQuoteAta = getAssociatedTokenAddressSync(
+    TSLAX_MINT,
+    potPda,
+    true,
+    quoteTokenProgram,
+    ASSOCIATED_TOKEN_PROGRAM_ID
+  );
+  if (expectedPotQuoteAta.toBase58() !== manifest.potQuoteAta) {
+    throw connectionError("pot_quote_ata_manifest_mismatch");
+  }
   const [playerRecord, playerBump] = pda([
     Buffer.from("candle_player"),
     configPda.toBuffer(),
@@ -309,6 +318,12 @@ async function readState(user) {
   const quoteMintState = unpackMint(TSLAX_MINT, quoteMintInfo, quoteTokenProgram);
   const curveAccount = unpackAccount(curveBaseAta, curveAtaInfo, baseTokenProgram);
   const potQuoteAccount = unpackAccount(new PublicKey(manifest.potQuoteAta), potQuoteInfo, quoteTokenProgram);
+  if (!curveAccount.mint.equals(mint) || !curveAccount.owner.equals(curvePda)) {
+    throw connectionError("curve_token_account_mismatch");
+  }
+  if (!potQuoteAccount.mint.equals(TSLAX_MINT) || !potQuoteAccount.owner.equals(potPda)) {
+    throw connectionError("pot_quote_token_account_mismatch");
+  }
   const quoteMint = normalizeQuoteMint(bondingCurve.quoteMint);
   if (!quoteMint.equals(TSLAX_MINT)) throw connectionError("curve_quote_mint_mismatch");
   const rung = priceNextRung({
@@ -360,6 +375,52 @@ async function readState(user) {
     userQuoteBalance,
     potQuoteBalance: potQuoteAccount.amount,
     gameAlt: alt,
+  };
+}
+
+async function readSettlementState() {
+  const manifest = assertConfigured();
+  const connection = makeConnection();
+  const programId = new PublicKey(manifest.programId);
+  const mint = new PublicKey(manifest.mint);
+  const quoteTokenProgram = new PublicKey(manifest.tslaxTokenProgram);
+  const [configPda, configBump] = pda([Buffer.from("candle_config"), mint.toBuffer()], programId);
+  const [potPda, potBump] = pda([Buffer.from("candle_pot"), configPda.toBuffer()], programId);
+  const potQuoteAta = getAssociatedTokenAddressSync(
+    TSLAX_MINT,
+    potPda,
+    true,
+    quoteTokenProgram,
+    ASSOCIATED_TOKEN_PROGRAM_ID
+  );
+  if (potQuoteAta.toBase58() !== manifest.potQuoteAta) {
+    throw connectionError("pot_quote_ata_manifest_mismatch");
+  }
+  const [configInfo, quoteMintInfo, potQuoteInfo] = await retry("settlement_account_read", () => (
+    connection.getMultipleAccountsInfo([configPda, TSLAX_MINT, potQuoteAta], "confirmed")
+  ));
+  if (!configInfo || !configInfo.owner.equals(programId)) throw connectionError("config_owner_mismatch");
+  if (!quoteMintInfo || !quoteMintInfo.owner.equals(quoteTokenProgram)) throw connectionError("quote_mint_owner_mismatch");
+  if (!potQuoteInfo || !potQuoteInfo.owner.equals(quoteTokenProgram)) throw connectionError("pot_quote_ata_missing");
+  const config = decodeConfig(configInfo);
+  verifyManifestState(manifest, programId, configPda, potPda, config);
+  unpackMint(TSLAX_MINT, quoteMintInfo, quoteTokenProgram);
+  const potQuoteAccount = unpackAccount(potQuoteAta, potQuoteInfo, quoteTokenProgram);
+  if (!potQuoteAccount.mint.equals(TSLAX_MINT) || !potQuoteAccount.owner.equals(potPda)) {
+    throw connectionError("pot_quote_token_account_mismatch");
+  }
+  return {
+    manifest,
+    connection,
+    programId,
+    quoteTokenProgram,
+    configPda,
+    configBump,
+    potPda,
+    potBump,
+    potQuoteAta,
+    potQuoteBalance: potQuoteAccount.amount,
+    config,
   };
 }
 
@@ -508,6 +569,9 @@ async function buildAtomic(user, body) {
     throw new Error("jupiter_quote_amount_mismatch");
   }
   const state = await readState(user);
+  if (state.manifest.atomicSolEntryEnabled !== true) {
+    throw connectionError("atomic_sol_entry_disabled");
+  }
   const measured = stateMeasure(user, state, BigInt(quote.otherAmountThreshold));
   if (!measured.gates.ok) return { ...measured, transaction: null };
   if (BigInt(quote.otherAmountThreshold) < state.quoteMaxRaw) {
@@ -564,7 +628,7 @@ async function buildAtomic(user, body) {
 }
 
 async function buildSettlement(user, kind) {
-  const state = await readState(user);
+  const state = await readSettlementState();
   const now = Math.floor(Date.now() / 1000);
   let winner;
   let instruction;
@@ -603,7 +667,7 @@ async function buildSettlement(user, kind) {
         { pubkey: state.configPda, isSigner: false, isWritable: false },
         { pubkey: state.potPda, isSigner: false, isWritable: false },
         { pubkey: winner, isSigner: false, isWritable: false },
-        { pubkey: new PublicKey(state.manifest.potQuoteAta), isSigner: false, isWritable: true },
+        { pubkey: state.potQuoteAta, isSigner: false, isWritable: true },
         { pubkey: winnerQuoteAta, isSigner: false, isWritable: true },
         { pubkey: TSLAX_MINT, isSigner: false, isWritable: false },
         { pubkey: state.quoteTokenProgram, isSigner: false, isWritable: false },

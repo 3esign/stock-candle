@@ -38,7 +38,7 @@ Screenshots:
 
 ## Honest Verdict
 
-Verified: static fail-closed behavior, rung-pricing math, actual browser layout at desktop/mobile device metrics, nonblank Canvas, direct browser quote path and swap endpoint reachability. The underlying CANDLE WSL LiteSVM regression remains 9/9 green, including SOL close and repeatable TSLAx-prize claims.
+Verified: static fail-closed behavior, rung-pricing math, actual browser layout at desktop/mobile device metrics, nonblank Canvas, direct browser quote path and swap endpoint reachability. The underlying CANDLE WSL LiteSVM regression is 11/11 green, including prefunded-PDA recovery, SOL close and repeatable TSLAx-prize claims.
 
 Concluded: a player can be offered TSLAx acquisition inside the site without custody or a private RPC. One-signature entry is packet-feasible and the browser contract is ready; two wallet approvals remain the safe runtime fallback.
 

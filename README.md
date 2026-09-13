@@ -20,7 +20,7 @@ STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Te
 | Part | State |
 |---|---|
 | Game program | Implemented at `C:\Svemir\skills\svemir-solana\lab\candle-fuse` |
-| Local SBF proof | 9/9 LiteSVM tests pass with real Token-2022 movement and rollback checks |
+| Local SBF proof | 11/11 LiteSVM tests pass with real Token-2022 movement, rollback and prefunded-PDA recovery checks |
 | Pump proof | Current `buy_v2` account shape and a real STOCX trade replay are covered |
 | SOL entry | ExactIn Jupiter route is integrated; one signature is preferred when the combined route fits, with a two-approval fallback |
 | Prize path | Full SOL pot closes to the leader; full TSLAx pot balance and later fee arrivals remain claimable by that same winner |
@@ -34,7 +34,7 @@ STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Te
 2. Build and test the mobile-first site in pre-launch mode.
 3. Implement the final-account builder behind the prepared browser contract.
 4. Re-run live Pump, TSLAx extension, Jupiter-route, combined simulation and packet-size gates.
-5. Receive the final Telegram URL and publish the final X post.
+5. Telegram and DNS are set; publish the final X post after custom-domain HTTPS is valid.
 6. Freeze metadata, state exact funding requirement, rehearse, then ask for explicit deploy approval.
 
 ## Honest Verdict
@@ -43,4 +43,4 @@ Verified: the core Candle Ladder program and local adversarial tests, current TS
 
 Concluded: the user should be able to enter with SOL without separately discovering where TSLAx trades. The conversion settles on-chain and remains wallet-signed; the route builder is replaceable infrastructure, not game authority. A sampled combined packet fits one signature, but its public feature flag remains off until final-mint runtime proof.
 
-Not done: `$XCNDL` creation, program deploy, config initialization, launch funding, metadata publication, DNS publication, or any irreversible transaction.
+Not done: final X metadata, `$XCNDL` creation, program deploy, config initialization, launch funding, or any irreversible transaction. DNS is live; GitHub Pages custom-domain HTTPS is still provisioning.

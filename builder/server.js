@@ -95,6 +95,7 @@ function manifestConfigured(manifest) {
     && manifest.siteUrl === "https://scandle.ratchetx.xyz/"
     && manifest.deployed === true
     && manifest.tradingEnabled === true
+    && manifest.programImmutable === true
     && manifest.tslaxMint === TSLAX_MINT.toBase58()
     && requiredAddresses.every((value) => address.test(value || ""))
     && /^https:\/\//.test(manifest.gameBuilderUrl || "")

@@ -1,6 +1,6 @@
 # STOCK CANDLE - Pre-launch QA
 
-Verified again against public HTTPS on 2026-09-13. No wallet key was read. Nothing was signed, sent, deployed or spent.
+Final launch verification: 2026-09-13. Mainnet deployment, token creation, initialization, fee lock, ALT freeze, founder entry/transfer and program authority revocation are confirmed.
 
 ## Static Gates
 
@@ -16,7 +16,7 @@ Result: `STOCK_CANDLE_RUNG_PRICING_PASS`. First rung, ordinary next rung, sell r
 
 Command: `node builder/server.test.js`
 
-Result: `STOCK_CANDLE_BUILDER_FAIL_CLOSED_PASS`. The exact config offsets decode, health discloses no signing/sending capability, and transaction building returns `503 launch_manifest_not_configured` while final addresses are empty.
+Result: `STOCK_CANDLE_BUILDER_CONTRACT_PASS`. Exact config offsets decode, the live manifest contract passes, and health discloses `signs:false` plus `sends:false`.
 
 ## Browser Gates
 
@@ -25,7 +25,7 @@ Command: `node site/test/browser-qa.js https://scandle.ratchetx.xyz/`
 - desktop: `1440x1000`, scroll width `1440`, zero overflowing visible elements;
 - mobile: `390x844`, scroll width `390`, zero overflowing visible elements;
 - Canvas colored samples are nonzero on desktop and mobile;
-- launch state: `PRE-LAUNCH` and trade button disabled on both;
+- launch state: `LIVE`; without a connected wallet the trade button remains disabled on both;
 - real browser UI quote at the latest pass: `0.05 SOL -> at least 0.01362529 TSLAx`;
 - Jupiter quote CORS: success with positive TSLAx output;
 - Jupiter swap POST CORS: endpoint reached; intentionally empty body returned HTTP `422`, proving the browser can receive the response without building or signing a transaction.
@@ -38,8 +38,8 @@ Screenshots:
 
 ## Honest Verdict
 
-Verified: static fail-closed behavior, rung-pricing math, actual browser layout at desktop/mobile device metrics, nonblank Canvas, direct browser quote path and swap endpoint reachability. The underlying CANDLE WSL LiteSVM regression is 11/11 green, including prefunded-PDA recovery, SOL close and repeatable TSLAx-prize claims.
+Verified: live manifest gates, rung-pricing math, actual browser layout at desktop/mobile device metrics, nonblank Canvas, direct config/SOL-pot/Token-2022-prize reads, browser quote path and swap endpoint reachability. The underlying CANDLE WSL LiteSVM regression is 11/11 green, including prefunded-PDA recovery, SOL close and repeatable TSLAx-prize claims.
 
 Concluded: a player can be offered TSLAx acquisition inside the site without custody or a private RPC. One-signature entry is packet-feasible and the browser contract is ready; two wallet approvals remain the safe runtime fallback.
 
-Not verified: a real browser-wallet SOL swap through this new page, final-account builder execution, combined final-mint runtime execution, deployed account reads or any mainnet launch action. DNS, direct HTTPS, responsive public rendering and the no-key builder health endpoint are verified; economics remain uninitialized until deploy.
+Not verified: an independent player's real browser-wallet send through the public page or the optional one-signature combined SOL route. The founder path proved the final Pump wrapper on mainnet; the public builder proved final-account measure and stays no-key/no-send. Program authority is null, fee sharing is locked and ALT authority is null.

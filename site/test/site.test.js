@@ -28,6 +28,7 @@ assert.doesNotMatch(html, /Tesla logo|Tesla car/i);
 
 assert.strictEqual(manifest.deployed, true);
 assert.strictEqual(manifest.tradingEnabled, true);
+assert.strictEqual(manifest.programImmutable, true);
 assert.strictEqual(manifest.atomicSolEntryEnabled, false);
 assert.strictEqual(manifest.launchParameters.windowSeconds, 900);
 assert.strictEqual(manifest.launchParameters.minimumBaseAmountRaw, "1000000000000");
@@ -54,6 +55,8 @@ assert.match(html, /<link rel="canonical" href="https:\/\/scandle\.ratchetx\.xyz
 
 assert.match(js, /function manifestIsLaunchReady\(\)/);
 assert.match(js, /function hydrateOnChainState\(\)/);
+assert.doesNotMatch(js, /getTokenAccountBalance/);
+assert.match(js, /TSLAx prize account mint or pot authority does not match/);
 assert.match(js, /Config mint or token-program binding does not match the public manifest/);
 assert.match(js, /On-chain game rules do not match the public manifest/);
 assert.match(js, /build-close/);

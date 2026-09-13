@@ -48,6 +48,8 @@ Start with SOL or TSLAx and buy `$XCNDL`; if the verified buy pushes the Pump cu
 
 Trustless after launch means the game rules, rung records, leader and pot settlement are enforced by the deployed program. The website, public RPC and route builder are replaceable interfaces; they can fail or disappear without owning the game or player funds.
 
+The program upgrade authority is revoked, the game ALT is frozen, and Pump creator-fee sharing is admin-revoked at the published 66.33% / 33.67% split.
+
 ## Risk And Identity
 
 - `$XCNDL` is a game token paired with TSLAx. It is not Tesla stock and does not grant Tesla equity.

@@ -13,6 +13,7 @@
 - Prvi finalni ALT pokušaj je bez slanja stao na očekivanih 22 naspram 21 jedinstvene statičke adrese. Uzrok: modelirani prelaunch Pump account shape imao je jednu statičku adresu više od deduplikovanog živog XCNDL `buy_v2`; lek je zamrznuti i testirati stvarni final-mint skup od 21 adrese, ne raniji modelirani broj.
 - Prvi javni post-launch browser QA dobio je stari `PRE-LAUNCH` iako je cache-busted manifest već bio živ. Uzrok: GitHub Pages CDN je još služio neversionirani `app.js`/manifest put; lek je verzionisati oba launch resursa u HTML-u i JS fetch-u, jer samo `cache: no-store` u klijentu nije dovoljno za trenutni shared-cache prelaz.
 - Javni `api.mainnet-beta.solana.com` vraća browser-originu `403 Access forbidden`, dok `solana-rpc.publicnode.com` iz iste javne stranice vraća potvrđen mainnet slot. Lek: browser manifest koristi provereni PublicNode kao prvi read-only RPC, zvanični endpoint kao fallback, a objektne JSON-RPC greške pretvara u čitljivu poruku.
+- PublicNode dozvoljava `getAccountInfo` i `getBalance`, ali indeksirani `getTokenAccountBalance` traži lični token. Lek: Token-2022 pot ATA se čita kao običan account, pa browser lokalno proverava token-program owner, TSLAx mint, pot authority i u64 amount; live tabla ne zavisi od indeksiranog RPC servisa.
 
 # Iskustva
 

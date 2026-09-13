@@ -16,5 +16,5 @@ No deploy or irreversible transaction until every box is independently verified.
 - [x] X post URL supplied and frozen in metadata (`https://x.com/SonyxEth/status/2099118851627602318`).
 - [x] Telegram URL supplied by Semir and frozen in metadata (`https://t.me/chetx`).
 - [x] Exact SOL/TSLAx funding requirement freshly measured; launch wallet is funded above the current `0.479290218 SOL` recommendation.
-- [ ] Semir explicitly approves token creation, program deploy, init, funding and any authority revocation.
-- [ ] Post-deploy readback publishes CA, program, config, pot, signatures and honest authority state.
+- [x] Semir explicitly approved token creation, program deploy, init, funding and authority revocation.
+- [x] Post-deploy readback publishes CA, program, config, pot, signatures and honest authority state.

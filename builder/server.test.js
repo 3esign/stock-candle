@@ -49,6 +49,7 @@ async function main() {
     siteUrl: "https://scandle.ratchetx.xyz/",
     deployed: true,
     tradingEnabled: true,
+    programImmutable: true,
     atomicSolEntryEnabled: true,
     launchParameters: {
       windowSeconds: 900,

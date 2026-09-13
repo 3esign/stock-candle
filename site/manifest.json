@@ -5,6 +5,7 @@
   "siteUrl": "https://scandle.ratchetx.xyz/",
   "deployed": true,
   "tradingEnabled": true,
+  "programImmutable": true,
   "atomicSolEntryEnabled": false,
   "launchParameters": {
     "windowSeconds": 900,

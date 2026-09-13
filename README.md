@@ -37,7 +37,7 @@ STOCK CANDLE is an independent on-chain game. It is not Tesla, Tesla stock, a Te
 5. Telegram, DNS and the launch X post are set; finish custom-domain HTTPS verification.
 6. Freeze metadata, state exact funding requirement, rehearse, then ask for explicit deploy approval.
 
-The disclosed founder plan is a 5,000,000 XCNDL purchase through the same game path, followed by transfer of those tokens to Semir's public wallet. A single 5M purchase still earns only one rung.
+The disclosed founder entry bought `5,514,041.162 XCNDL` through the same game path, earned exactly one rung, and transferred the full purchased balance to Semir's public wallet.
 
 ## Honest Verdict
 
@@ -45,4 +45,4 @@ Verified: the core Candle Ladder program and local adversarial tests, current TS
 
 Concluded: the user should be able to enter with SOL without separately discovering where TSLAx trades. The conversion settles on-chain and remains wallet-signed; the route builder is replaceable infrastructure, not game authority. A sampled combined packet fits one signature, but its public feature flag remains off until final-mint runtime proof.
 
-Live now: `$XCNDL`, the program, frozen 15-minute config, 0.05 SOL pot seed, locked creator-fee split and frozen game ALT are on mainnet. The final founder purchase, wallet transfer, live browser-wallet proof and program-authority revocation remain until their readbacks succeed.
+Live now: `$XCNDL`, the immutable program, frozen 15-minute config, 0.05 SOL pot seed, locked creator-fee split and frozen game ALT are on mainnet. Founder buy and transfer readbacks pass; a public browser-wallet transaction by an independent player remains unobserved.

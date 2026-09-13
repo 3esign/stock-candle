@@ -40,12 +40,12 @@
       <div class="title-block">
         <p class="eyebrow">XCNDL / TSLAx &middot; CANDLE LADDER</p>
         <h1 id="pageTitle">STOCK<br>CANDLE</h1>
-        <p class="lead">Start with <strong>SOL or TSLAx</strong>. Buy <strong>$XCNDL</strong>. A verified buy that crosses the next 1,000,000-token level earns one rung. Most rungs after 15 minutes wins the SOL pot and TSLAx fee prize.</p>
+        <p class="lead">The <strong>$XCNDL</strong> launch race is complete. One founder entry earned one rung. The <strong>0.051 SOL pot was paid</strong> to the recorded winner; future TSLAx fee prizes remain theirs.</p>
         <div class="primary-actions">
-          <a class="button primary" href="#play">Play with SOL</a>
+          <a class="button primary" href="#stateTitle">View race result</a>
           <a class="button" href="#rules">Read rules</a>
         </div>
-        <p class="entry-note"><strong>No TSLAx?</strong> Start with SOL. The site finds the on-chain conversion route before you approve anything.</p>
+        <p class="entry-note"><strong>Race closed.</strong> The 15-minute launch race has settled. New entries are closed; future TSLAx fee prizes remain claimable by the recorded winner.</p>
         <dl class="identity-line" aria-label="Token identity">
           <div><dt>WINDOW</dt><dd>15 MIN</dd></div>
           <div><dt>NEXT RUNG</dt><dd>1M XCNDL</dd></div>
@@ -80,8 +80,8 @@
     <section class="entry-band" id="play" aria-labelledby="playTitle">
       <div class="section-heading">
         <p class="eyebrow">PLAYER ENTRY</p>
-        <h2 id="playTitle">Start with what you have.</h2>
-        <p>Start with SOL and the site handles TSLAx. When the current route fits, one wallet signature enters the game; otherwise the same flow completes safely in two approvals.</p>
+        <h2 id="playTitle">The race has ended.</h2>
+        <p>Entry and SOL conversion are closed. The token remains on Pump; ordinary trades after close do not earn game rungs.</p>
       </div>
 
       <div class="trade-workspace">
@@ -144,13 +144,13 @@
     <section class="state-band" aria-labelledby="stateTitle">
       <div class="state-copy">
         <p class="eyebrow">ON-CHAIN BOARD</p>
-        <h2 id="stateTitle">Empty until truth exists.</h2>
+        <h2 id="stateTitle">The recorded result.</h2>
         <p id="stateExplanation">Mainnet addresses are published. This board verifies the game config, token pair, pot and timing directly from Solana.</p>
         <div class="state-actions">
           <button class="button primary" id="settleButton" type="button" disabled>Settle SOL after close</button>
           <button class="button" id="claimButton" type="button" disabled>Release TSLAx to winner</button>
         </div>
-        <p class="state-status" id="stateStatus" role="status">Both settlement actions remain disabled before launch.</p>
+        <p class="state-status" id="stateStatus" role="status">Verifying the settled race directly on Solana. TSLAx release becomes available when the pot has a balance.</p>
       </div>
       <dl class="state-grid">
         <div><dt>XCNDL CA</dt><dd id="mintState">PENDING</dd></div>
@@ -188,7 +188,7 @@
     <section class="proof-band" aria-labelledby="proofTitle">
       <div>
         <p class="eyebrow">CURRENT PROOF</p>
-        <h2 id="proofTitle">Built locally. Not presented as launched.</h2>
+        <h2 id="proofTitle">Launched. Locked. Settled.</h2>
       </div>
       <ul class="proof-list">
         <li><strong>11/11</strong><span>LiteSVM program tests</span></li>
@@ -212,6 +212,8 @@
     <p class="risk">Independent on-chain game. Not affiliated with Tesla or the TSLAx issuer. $XCNDL is not equity. TSLAx availability is jurisdiction-dependent. No reward, profit, price, liquidity or route is guaranteed.</p>
   </footer>
 
-  <script src="app.js?v=launch-live-v4" defer></script>
+  <script src="minisol.js?v=settled-v1" defer></script>
+  <script src="settlement.js?v=settled-v1" defer></script>
+  <script src="app.js?v=settled-v1" defer></script>
 </body>
 </html>

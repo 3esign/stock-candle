@@ -4,7 +4,9 @@
   "network": "mainnet-beta",
   "siteUrl": "https://scandle.ratchetx.xyz/",
   "deployed": true,
-  "tradingEnabled": true,
+  "tradingEnabled": false,
+  "entryPermanentlyClosed": true,
+  "settlementMode": "browser",
   "programImmutable": true,
   "atomicSolEntryEnabled": false,
   "launchParameters": {
@@ -31,7 +33,7 @@
   "tslaxTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
   "expectedProgramSha256": "22EE4F121EC05B9C47CA32001A740FAFAFB46939A2AAF7E402D86E4A9BE29A6B",
   "imageSha256": "87D50077B2202B111943C55C5186046956F319A8F0FFAC513A27B1D76ECF5DCC",
-  "gameBuilderUrl": "https://angle-rotary-activated-eds.trycloudflare.com",
+  "gameBuilderUrl": "",
   "jupiterQuoteApi": "https://lite-api.jup.ag/swap/v1/quote",
   "jupiterSwapApi": "https://lite-api.jup.ag/swap/v1/swap",
   "rpcUrls": [

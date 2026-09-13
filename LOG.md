@@ -27,3 +27,16 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T14:45:00+02:00 · Codex/Svemir · ponovljeni static i packet atomi: legacy 1,166 B; najnoviji SOL ulaz 1,039 B sa 193 B rezerve; nista potpisano ni poslato · ok
 - 2026-09-13T14:54:00+02:00 · Codex/Svemir · finalni X launch post `2099118851627602318` zamrznut u manifestu i social metadata; Telegram ostaje `t.me/chetx` · ok
 - 2026-09-13T14:56:00+02:00 · Codex/Svemir · founder cilj promenjen na javnih 5M XCNDL; sveza 0.21 SOL ruta vec pokriva pocetni 5M max, budzet koristi 0.22 SOL i jedan rung po transakciji · ok
+- 2026-09-13T15:08:00+02:00 · Codex/Svemir · potvrđen launch-wallet balans `0.494485737 SOL`; X post `2099118851627602318` zamenio metadata placeholder, funding i prethodni mobilni/desktop QA gateovi označeni kao završeni · ok
+- 2026-09-13T15:12:00+02:00 · Codex/Svemir · dodat fail-closed `launch/create-token.js`: proverava zamrznuti mint/deployer/TSLAx, uploaduje javnu metadata samo eksplicitnim flagom, uvek simulira i ne moze poslati bez posebne mainnet fraze · ok
+- 2026-09-13T15:14:00+02:00 · Codex/Svemir · prvi create rehearsal uhvatio lokalni `simulateTransaction` overload mismatch pre RPC-a; poziv uskladjen sa proverenim STOCX launcherom · fixed
+- 2026-09-13T15:27:00+02:00 · Codex/Svemir · Pump IPFS metadata i slika objavljeni i procitani preko nezavisnog gatewaya; create ponovo simuliran bez greske i bez slanja · ok
+- 2026-09-13T15:38:00+02:00 · Codex/Svemir · dodat jedinstveni fail-closed mainnet admin za program deploy, game init+pot seed, zakljucani fee share i finalni 22-address ALT; nijedna send potvrda nije data · ok
+- 2026-09-13T15:42:00+02:00 · Codex/Svemir · finalni test talas: LiteSVM 11/11, static/builder/site zeleni, TSLAx extension gate zeleni, legacy wrapper 1,166 B; trenutni atomski SOL route paket 1,211 B sa 21 B rezerve · ok
+- 2026-09-13T15:50:00+02:00 · Codex/Svemir · GitHub Pages domen uklonjen i ponovo vezan po zvanicnom recovery postupku; sertifikat odobren, HTTPS enforcement ukljucen, direktan HTTPS 200 · ok
+- 2026-09-13T15:51:00+02:00 · Codex/Svemir · javni HTTPS browser QA na 1440x1000 i 390x844: nula overflow-a, Canvas neprazan, pre-launch fail-closed, Jupiter quote i swap CORS dostupni · ok
+- 2026-09-13T16:04:00+02:00 · Codex/Svemir · dodat idempotentni founder runner: 0.22 SOL swap guard, tacan 5M wrapper buy sa jednim rungom i odvojeni 5M XCNDL transfer Semiru, sve simulira pre slanja · ok
+- 2026-09-13T16:10:00+02:00 · Codex/Svemir · launch runner self-review dodao strogi loader/executable/tag readback, XCNDL decimal gate i testove PDA/init/economics/founder layouta · ok
+- 2026-09-13T16:15:00+02:00 · Codex/Svemir · dodat poslednji authority-lock gate: program se moze uciniti immutable tek posle finalnog config/fee/ALT readbacka i founder wrapper+transfer potpisa · ok
+- 2026-09-13T16:18:00+02:00 · Codex/Svemir · prvi quick tunnel uhvatio pogresan inherited Cloudflare config i javni 404; dodat eksplicitan minimalni project config za cist accountless tunel · fixed
+- 2026-09-13T16:20:00+02:00 · Codex/Svemir · cist builder tunnel javno vraca health 200 sa `signs:false/sends:false`; predeploy trade endpoint fail-closed vraca 503 i ispravan CORS · ok

@@ -4,7 +4,7 @@
   "description": "A fully on-chain Solana candle race paired with TSLAx. Start with SOL or TSLAx, cross irreversible 1M XCNDL rungs for 15 minutes, and race for the SOL pot plus TSLAx fee prize.",
   "image": "https://scandle.ratchetx.xyz/assets/xcndl-token.png",
   "external_url": "https://scandle.ratchetx.xyz/",
-  "twitter": "TBD_AFTER_FINAL_POST",
+  "twitter": "https://x.com/SonyxEth/status/2099118851627602318",
   "telegram": "https://t.me/chetx",
   "attributes": [
     { "trait_type": "Game", "value": "Candle Ladder" },

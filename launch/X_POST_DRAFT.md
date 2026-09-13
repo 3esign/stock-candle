@@ -1,13 +1,15 @@
 # X Post Draft
 
-Publish this pre-launch post only after the site URL is live. Its URL is then frozen into token metadata before deployment.
+Published pre-launch post, now frozen into token metadata:
+
+`https://x.com/SonyxEth/status/2099118851627602318`
 
 ```text
-STOCK CANDLE turns a market chart into an on-chain game.
+STOCK CANDLE is about to launch on @pumpfun.
 
-Start with SOL or TSLAx. Buy $XCNDL. Cross the next 1M candle = 1 rung. Sells never reset the ladder. After 15 minutes, the wallet with most rungs wins the SOL pot + TSLAx fee prize.
+Start with SOL or TSLAx. Buy $XCNDL. Every verified buy that crosses the next 1M-token level earns 1 rung. Sells never reset the ladder. After 15 min, most rungs wins the SOL pot + TSLAx fee prize.
 
-Play: https://scandle.ratchetx.xyz/
+https://scandle.ratchetx.xyz/
 ```
 
 Final launch reply should contain the verified CA and a Solana explorer link. Never place a placeholder CA in the public post.

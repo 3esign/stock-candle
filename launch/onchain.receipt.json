@@ -174,5 +174,32 @@
         "recordBump": 255
       }
     }
+  },
+  "programLock": {
+    "at": "2026-09-13T14:16:47.165Z",
+    "signature": null,
+    "address": "4NAF1Q253cmH4mviU5eMF3A23qUGxzuwXhkHAoGvAAHB",
+    "exists": true,
+    "executable": true,
+    "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+    "header": {
+      "tag": 2,
+      "programData": "S6MdbiR2Wb1ZH67rTpmb3ZhQtzs4y7HoVLxiPMMiNpx"
+    },
+    "programData": {
+      "tag": 3,
+      "slot": "446720968",
+      "authority": null,
+      "elfBytes": 30720,
+      "elfSha256": "262F600D1E457E1447AEC92F8F4E8FBF1743F93AC32EC411E9E24ADB4F390092",
+      "prefixMatches": true,
+      "paddingAllZero": true
+    },
+    "localArtifact": {
+      "size": 30648,
+      "sha256": "22EE4F121EC05B9C47CA32001A740FAFAFB46939A2AAF7E402D86E4A9BE29A6B",
+      "matches": true
+    },
+    "liveMatches": true
   }
 }

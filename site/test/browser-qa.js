@@ -144,6 +144,7 @@ async function loadViewport(cdp, name, width, height, mobile) {
       lead: document.querySelector(".lead").textContent.trim(),
       launch: document.getElementById("launchPill").textContent.trim(),
       tradeDisabled: document.getElementById("tradeButton").disabled,
+      stateStatus: document.getElementById("stateStatus").textContent.trim(),
       canvasColoredSamples: colored
     };
   })()`);
@@ -221,7 +222,29 @@ async function main() {
       } catch (_error) {}
       return { quoteOk: quoteResponse.ok, quoteOut: quote.outAmount || "", swapReachable, swapStatus };
     })()`);
+    const rpcProbe = await evaluate(cdp, `(async () => {
+      const urls = [
+        "https://api.mainnet-beta.solana.com",
+        "https://solana-rpc.publicnode.com",
+        "https://rpc.ankr.com/solana",
+        "https://solana.api.onfinality.io/public"
+      ];
+      return Promise.all(urls.map(async (url) => {
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "getSlot", params: [{ commitment: "confirmed" }] })
+          });
+          const body = await response.json();
+          return { url, status: response.status, slot: body.result || 0, error: body.error?.message || "" };
+        } catch (error) {
+          return { url, status: 0, slot: 0, error: String(error?.message || error) };
+        }
+      }));
+    })()`);
 
+    console.log(JSON.stringify({ desktop, mobile, uiQuote, cors, rpcProbe }, null, 2));
     for (const metrics of [desktop, mobile]) {
       assert.strictEqual(metrics.scrollWidth, metrics.innerWidth, JSON.stringify(metrics.overflow));
       assert.deepStrictEqual(metrics.overflow, []);
@@ -237,7 +260,6 @@ async function main() {
     assert.match(uiQuote.value, /SOL -> at least .* TSLAx/);
     assert.match(uiQuote.status, /Fresh route found/);
 
-    console.log(JSON.stringify({ desktop, mobile, uiQuote, cors }, null, 2));
     console.log("OK: STOCK_CANDLE_BROWSER_QA_PASS");
   } finally {
     if (cdp) cdp.close();

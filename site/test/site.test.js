@@ -48,6 +48,7 @@ assert.strictEqual(manifest.tslaxMint, "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJH
 assert.strictEqual(manifest.expectedProgramSha256, "22EE4F121EC05B9C47CA32001A740FAFAFB46939A2AAF7E402D86E4A9BE29A6B");
 assert.strictEqual(manifest.telegramUrl, "https://t.me/chetx");
 assert.strictEqual(manifest.xUrl, "https://x.com/SonyxEth/status/2099118851627602318");
+assert.strictEqual(manifest.rpcUrls[0], "https://solana-rpc.publicnode.com");
 assert.match(html, /<meta name="twitter:creator" content="@SonyxEth">/);
 assert.match(html, /<link rel="canonical" href="https:\/\/scandle\.ratchetx\.xyz\/">/);
 

@@ -2,3 +2,4 @@
 {"term":"XCNDL","definition":"Planirani simbol game tokena koji se kupuje TSLAx-om; još nema mainnet mint ni CA.","source":"README.md","at":"2026-09-13T09:24:00+02:00"}
 {"term":"candle rung","definition":"Jedan nepovratan nivo koji dobija prva verifikovana kupovina koja pređe sledeći zaključani prag krive.","source":"RULES.md","at":"2026-09-13T09:24:00+02:00"}
 {"term":"Play with SOL","definition":"Wallet-signed ulaz koji svežom rutom pretvara SOL u TSLAx pre game kupovine; nije custody niti administratorska prečica.","source":"RULES.md","at":"2026-09-13T09:38:00+02:00"}
+{"term":"smart entry","definition":"SOL ulaz koji pokušava jedan atomski wallet potpis za TSLAx konverziju i rung kupovinu, pa bezbedno pada na dve potvrde ako finalna ruta ne prođe gateove.","source":"builder/README.md","at":"2026-09-13T13:30:00+02:00"}

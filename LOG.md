@@ -10,3 +10,6 @@ Vreme · um · radnja · rezultat. Vodi `node tools/project_kit.js log`.
 - 2026-09-13T10:02:00+02:00 · Codex/Svemir · izgrađen statički pre-launch sajt, wallet-signed SOL->TSLAx put, direktni TSLAx put, token SVG/PNG i javna rules stranica · ok
 - 2026-09-13T10:07:00+02:00 · Codex/Svemir · desktop 1440x1000 i mobilni 390x844 browser QA: nema horizontalnog overflow-a, Canvas nije prazan, trade je zaključan; live browser quote i CORS provera prolaze · ok
 - 2026-09-13T10:12:00+02:00 · Codex/Svemir · projekat dobio sopstveni git i upisan u `!Projekti/INDEX.md` i `KATALOG.jsonl`; centralni `data/project_kits.jsonl` ostaje nedostupan za upis · partial
+- 2026-09-13T10:22:00+02:00 · Codex/Svemir · ispravljen player UX: TSLAx je maksimalni budžet, builder automatski računa najmanji `$XCNDL` buy koji prelazi sledeći on-chain rung · ok
+- 2026-09-13T13:30:00+02:00 · Codex/Svemir · dodat smart-entry browser ugovor: jedan atomski SOL->TSLAx->XCNDL potpis iza final-runtime flaga, sa automatskim fallbackom na dve potvrde; dodat testiran rung-pricing core · ok
+- 2026-09-13T13:38:00+02:00 · Codex/Svemir · ponovljeni static, builder, desktop/mobile/CDP i WSL LiteSVM testovi; 0 overflow-a, realni Jupiter quote, 9/9 programskih testova · ok

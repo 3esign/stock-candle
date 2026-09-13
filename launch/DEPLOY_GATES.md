@@ -9,6 +9,7 @@ No deploy or irreversible transaction until every box is independently verified.
 - [ ] SOL -> TSLAx ExactIn route, price-impact guard and browser CORS rechecked.
 - [ ] SOL -> TSLAx wallet path tested on an isolated low-value rehearsal.
 - [ ] Direct TSLAx -> game transaction fits and simulates with the final accounts.
+- [ ] Combined SOL -> TSLAx -> XCNDL -> rung transaction fits, validates echoed intent and fully simulates with final accounts before `atomicSolEntryEnabled` is set true.
 - [ ] Program SBF hash, source hash, program ID and config derivations frozen.
 - [ ] Pot settlement, rollback, sell/rebuy, wrong-account and tie tests pass from release source.
 - [ ] Site mobile/desktop visual QA and no-overlap checks pass.

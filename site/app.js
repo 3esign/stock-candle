@@ -7,6 +7,9 @@ const app = {
   mode: "sol",
   quote: null,
   quoteAt: 0,
+  gameMeasure: null,
+  gameMeasureAt: 0,
+  atomicFallback: false,
   busy: false,
   rpcUrl: "",
 };
@@ -138,6 +141,10 @@ function manifestIsLaunchReady() {
   );
 }
 
+function atomicSolEntryEnabled() {
+  return manifestIsLaunchReady() && app.manifest.atomicSolEntryEnabled === true;
+}
+
 function setBusy(value) {
   app.busy = value;
   renderEntry();
@@ -187,12 +194,14 @@ function renderEntry() {
     button.classList.toggle("active", active);
     button.setAttribute("aria-selected", String(active));
   });
-  ui.amountLabel.textContent = solMode ? "SOL to convert" : "TSLAx to spend";
+  ui.amountLabel.textContent = solMode ? "SOL to convert" : "Maximum TSLAx budget";
   ui.amountUnit.textContent = solMode ? "SOL" : "TSLAx";
   ui.amountHelp.textContent = solMode
-    ? "A fresh ExactIn route is checked before your wallet is asked to sign."
-    : "Your TSLAx stays in your wallet until you approve the game transaction.";
-  ui.quoteButton.textContent = solMode ? "Check SOL -> TSLAx" : "Check TSLAx balance";
+    ? (atomicSolEntryEnabled()
+      ? "The site combines SOL, TSLAx and the rung buy when the current route fits one transaction."
+      : "The site gets TSLAx first, then prepares the rung buy. Your wallet approves each transaction.")
+    : "The builder calculates the next rung and never asks the wallet to spend above this budget.";
+  ui.quoteButton.textContent = solMode ? "Check SOL -> TSLAx" : (launchReady ? "Price next rung" : "Check TSLAx balance");
   ui.walletValue.textContent = app.wallet ? shorten(app.wallet) : "Not connected";
   ui.connectWallet.textContent = app.wallet ? shorten(app.wallet) : "Connect wallet";
   ui.connectTop.textContent = app.wallet ? shorten(app.wallet) : "Connect wallet";
@@ -213,10 +222,14 @@ function renderEntry() {
   if (solMode) {
     const quoteFresh = app.quote && Date.now() - app.quoteAt <= MAX_QUOTE_AGE_MS;
     ui.tradeButton.disabled = app.busy || !quoteFresh;
-    ui.tradeButton.textContent = quoteFresh ? "Get TSLAx with SOL" : "Check route first";
+    const oneSignature = atomicSolEntryEnabled() && !app.atomicFallback;
+    ui.tradeButton.textContent = quoteFresh
+      ? (oneSignature ? "Buy XCNDL in one signature" : "Get TSLAx with SOL")
+      : "Check route first";
   } else {
-    ui.tradeButton.disabled = app.busy;
-    ui.tradeButton.textContent = "Play with TSLAx";
+    const measureFresh = app.gameMeasure && Date.now() - app.gameMeasureAt <= MAX_QUOTE_AGE_MS;
+    ui.tradeButton.disabled = app.busy || !measureFresh;
+    ui.tradeButton.textContent = measureFresh ? "Cross next rung" : "Price next rung first";
   }
 }
 
@@ -269,10 +282,12 @@ async function quoteSolToTslax() {
   }
   app.quote = quote;
   app.quoteAt = Date.now();
+  app.atomicFallback = false;
   const minimum = rawToDecimal(quote.otherAmountThreshold, 8);
   const route = (quote.routePlan || []).map((item) => item.swapInfo && item.swapInfo.label).filter(Boolean).join(" + ");
   ui.quoteValue.textContent = rawToDecimal(inputRaw, 9) + " SOL -> at least " + minimum + " TSLAx";
-  ui.quoteDetail.textContent = "1% slippage guard" + (route ? " | " + route : "") + ". Quote expires in 30 seconds.";
+  const approval = atomicSolEntryEnabled() ? "One-signature game entry will be tried" : "TSLAx conversion is the first approval";
+  ui.quoteDetail.textContent = "1% slippage guard" + (route ? " | " + route : "") + ". " + approval + ". Quote expires in 30 seconds.";
   setStatus("Fresh route found. This check did not sign or send anything.", "ok");
 }
 
@@ -291,6 +306,57 @@ async function checkTslaxBalance() {
   ui.quoteValue.textContent = rawToDecimal(total, 8) + " TSLAx in wallet";
   ui.quoteDetail.textContent = total >= requested ? "Balance covers the entered amount." : "Balance is below the entered amount.";
   setStatus("TSLAx balance read from Solana. Nothing was signed.", total >= requested ? "ok" : "warning");
+  return { total, requested };
+}
+
+async function callGameBuilder(kind, budgetRaw) {
+  if (!manifestIsLaunchReady()) throw new Error("Launch manifest is not ready. Game pricing remains disabled.");
+  const url = new URL("/api/stock-candle/" + kind, app.manifest.gameBuilderUrl);
+  url.searchParams.set("user", app.wallet);
+  url.searchParams.set("maxQuoteAmountRaw", budgetRaw.toString());
+  return fetchJson(url.toString(), { cache: "no-store" });
+}
+
+async function callAtomicEntryBuilder() {
+  if (!atomicSolEntryEnabled()) throw new Error("One-signature entry is not enabled for this launch.");
+  const url = new URL("/api/stock-candle/build-sol-entry", app.manifest.gameBuilderUrl);
+  return fetchJson(url.toString(), {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      user: app.wallet,
+      quoteResponse: app.quote,
+      inputAmountRaw: String(app.quote.inAmount),
+      minimumTslaxAmountRaw: String(app.quote.otherAmountThreshold),
+    }),
+  });
+}
+
+function verifyAtomicIntent(built) {
+  const intent = built && built.intent;
+  if (!intent || intent.user !== app.wallet || intent.inputMint !== SOL_MINT || intent.outputMint !== app.manifest.tslaxMint) {
+    throw new Error("Combined builder intent did not match this wallet and route.");
+  }
+  if (String(intent.inputAmountRaw) !== String(app.quote.inAmount)
+      || String(intent.minimumTslaxAmountRaw) !== String(app.quote.otherAmountThreshold)) {
+    throw new Error("Combined builder amounts did not match the checked quote.");
+  }
+}
+
+async function measureNextRung() {
+  const balance = await checkTslaxBalance();
+  if (!manifestIsLaunchReady()) return;
+  const measured = await callGameBuilder("measure", balance.requested);
+  if (!measured.gates || measured.gates.ok !== true) {
+    throw new Error((measured.gates && measured.gates.failures && measured.gates.failures[0]) || "The next rung is not currently buildable.");
+  }
+  app.gameMeasure = measured;
+  app.gameMeasureAt = Date.now();
+  const requiredBase = measured.requiredBaseAmountUi || "calculated";
+  const requiredQuote = measured.maxQuoteAmountUi || measured.requiredQuoteAmountUi || rawToDecimal(balance.requested, 8);
+  ui.quoteValue.textContent = requiredBase + " XCNDL crosses the next rung";
+  ui.quoteDetail.textContent = "Maximum " + requiredQuote + " TSLAx. Quote expires in 30 seconds.";
+  setStatus("Next rung priced from current on-chain state. Nothing was signed.", "ok");
 }
 
 async function inspectEntry() {
@@ -298,7 +364,7 @@ async function inspectEntry() {
   try {
     if (!ui.eligibilityCheck.checked) throw new Error("Confirm TSLAx eligibility before requesting market data.");
     if (app.mode === "sol") await quoteSolToTslax();
-    else await checkTslaxBalance();
+    else await measureNextRung();
   } catch (error) {
     app.quote = null;
     ui.quoteValue.textContent = "No valid route or balance result.";
@@ -342,6 +408,7 @@ async function getTslaxWithSol() {
   if (!manifestIsLaunchReady()) throw new Error("Launch manifest is not ready. Spending remains disabled.");
   if (!app.wallet) throw new Error("Connect your wallet first.");
   if (!app.quote || Date.now() - app.quoteAt > MAX_QUOTE_AGE_MS) throw new Error("The route expired. Check it again.");
+  const minimumTslax = rawToDecimal(app.quote.otherAmountThreshold, 8);
   const swap = await fetchJson(app.manifest.jupiterSwapApi, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -362,18 +429,39 @@ async function getTslaxWithSol() {
   const signature = await walletSignAndSendBase64(swap.swapTransaction);
   app.quote = null;
   app.mode = "tslax";
-  ui.entryAmount.value = "0.001";
+  app.gameMeasure = null;
+  ui.entryAmount.value = minimumTslax;
   setStatus("TSLAx conversion sent: " + shorten(signature) + ". Switch complete; confirm it before playing.", "ok");
+}
+
+async function playAtomicWithSol() {
+  if (!app.wallet) throw new Error("Connect your wallet first.");
+  if (!app.quote || Date.now() - app.quoteAt > MAX_QUOTE_AGE_MS) throw new Error("The route expired. Check it again.");
+  let built;
+  try {
+    built = await callAtomicEntryBuilder();
+    verifyAtomicIntent(built);
+    if (!built.gates || built.gates.ok !== true || !built.transaction || !built.transaction.serializedBase64) {
+      throw new Error((built.gates && built.gates.failures && built.gates.failures[0]) || "Combined transaction is not buildable for this route.");
+    }
+    await simulateSerializedTransaction(built.transaction.serializedBase64);
+  } catch (error) {
+    app.atomicFallback = true;
+    throw new Error("One-signature entry is unavailable for this route. Nothing was signed. Use the same checked route to get TSLAx first, then approve the rung buy. " + String(error.message || error));
+  }
+  setStatus("Combined SOL to TSLAx to XCNDL simulation passed. Review the single wallet approval.", "warning");
+  const signature = await walletSignAndSendBase64(built.transaction.serializedBase64);
+  app.quote = null;
+  app.gameMeasure = null;
+  setStatus("One-signature game entry sent: " + shorten(signature) + ". The board will update after confirmation.", "ok");
 }
 
 async function playWithTslax() {
   if (!manifestIsLaunchReady()) throw new Error("Launch manifest is not ready. Spending remains disabled.");
   if (!app.wallet) throw new Error("Connect your wallet first.");
+  if (!app.gameMeasure || Date.now() - app.gameMeasureAt > MAX_QUOTE_AGE_MS) throw new Error("The next-rung price expired. Check it again.");
   const quoteRaw = decimalToRaw(ui.entryAmount.value, 8);
-  const url = new URL("/api/stock-candle/build", app.manifest.gameBuilderUrl);
-  url.searchParams.set("user", app.wallet);
-  url.searchParams.set("quoteAmountRaw", quoteRaw.toString());
-  const built = await fetchJson(url.toString(), { cache: "no-store" });
+  const built = await callGameBuilder("build", quoteRaw);
   if (!built.transaction || !built.transaction.serializedBase64) {
     throw new Error((built.gates && built.gates.failures && built.gates.failures[0]) || "Game builder returned no signable transaction.");
   }
@@ -387,7 +475,10 @@ async function trade() {
   setBusy(true);
   try {
     if (!ui.eligibilityCheck.checked) throw new Error("Confirm TSLAx eligibility first.");
-    if (app.mode === "sol") await getTslaxWithSol();
+    if (app.mode === "sol") {
+      if (atomicSolEntryEnabled() && !app.atomicFallback) await playAtomicWithSol();
+      else await getTslaxWithSol();
+    }
     else await playWithTslax();
   } catch (error) {
     setStatus(String(error.message || error), "error");
@@ -492,6 +583,8 @@ function bindEvents() {
   ui.eligibilityCheck.addEventListener("change", renderEntry);
   ui.entryAmount.addEventListener("input", () => {
     app.quote = null;
+    app.gameMeasure = null;
+    app.atomicFallback = false;
     ui.quoteValue.textContent = app.mode === "sol" ? "Route needs a fresh check." : "Balance needs a fresh check.";
     ui.quoteDetail.textContent = "Nothing is signed by checking.";
     renderEntry();
@@ -500,7 +593,9 @@ function bindEvents() {
     button.addEventListener("click", () => {
       app.mode = button.dataset.mode;
       app.quote = null;
-      ui.entryAmount.value = app.mode === "sol" ? "0.01" : "0.001";
+      app.gameMeasure = null;
+      app.atomicFallback = false;
+      ui.entryAmount.value = app.mode === "sol" ? "0.05" : "0.015";
       ui.quoteValue.textContent = app.mode === "sol" ? "Request a fresh SOL to TSLAx route." : "Connect and check your TSLAx balance.";
       ui.quoteDetail.textContent = "Nothing is signed by checking.";
       renderEntry();

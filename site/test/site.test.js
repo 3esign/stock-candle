@@ -26,6 +26,7 @@ assert.doesNotMatch(html, /Tesla logo|Tesla car/i);
 
 assert.strictEqual(manifest.deployed, false);
 assert.strictEqual(manifest.tradingEnabled, false);
+assert.strictEqual(manifest.atomicSolEntryEnabled, false);
 assert.strictEqual(manifest.mint, "");
 assert.strictEqual(manifest.programId, "");
 assert.strictEqual(manifest.config, "");
@@ -41,6 +42,10 @@ assert.match(js, /swapMode", "ExactIn"/);
 assert.match(js, /Price impact exceeds the 1% site guard/);
 assert.match(js, /simulateSerializedTransaction\(swap\.swapTransaction\)/);
 assert.ok(js.indexOf("simulateSerializedTransaction(swap.swapTransaction)") < js.indexOf("walletSignAndSendBase64(swap.swapTransaction)"));
+assert.match(js, /build-sol-entry/);
+assert.match(js, /function verifyAtomicIntent\(built\)/);
+assert.match(js, /One-signature entry is unavailable for this route\. Nothing was signed\./);
+assert.ok(js.indexOf("simulateSerializedTransaction(built.transaction.serializedBase64)") < js.indexOf("walletSignAndSendBase64(built.transaction.serializedBase64)"));
 assert.match(js, /provider\.request\(\{/);
 assert.doesNotMatch(js, /secretKey|Keypair|data\/secrets|\.env/);
 

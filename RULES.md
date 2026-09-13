@@ -8,10 +8,12 @@ Buy `$XCNDL` with TSLAx through STOCK CANDLE; if the verified buy pushes the Pum
 
 ## Entry Paths
 
-- `Play with SOL`: the site requests a fresh ExactIn SOL -> TSLAx route, shows minimum output and price impact, simulates, then asks the player's wallet to sign. After confirmation, the player approves the separate game buy. This two-approval path is the reliable launch default until a combined packet is measured and proved.
+- `Play with SOL`: the site requests a fresh ExactIn SOL -> TSLAx route and shows its minimum output and price impact. A one-signature `SOL -> TSLAx -> XCNDL -> rung` packet is preferred when the final route fits and simulates; otherwise the site safely falls back to two wallet approvals.
 - `Play with TSLAx`: skips conversion and builds the game buy directly for a wallet that already has TSLAx.
+- The player sets a maximum TSLAx budget, not a guessed `$XCNDL` amount. The builder reads the curve and stored high-water mark, calculates the minimum base-token buy that crosses the next rung, then returns the quote and unsigned transaction only if that cost fits the budget.
 - No route is guaranteed. If no safe route is available, the SOL path stops before signing and the direct TSLAx path remains usable.
 - The builder never holds funds or a player key. A player may replace our builder and call the deployed program directly.
+- The one-signature path remains disabled by the public manifest until it passes a final-mint runtime simulation. Packet size alone is not enough.
 
 ## On-Chain Rules
 
@@ -19,6 +21,7 @@ Buy `$XCNDL` with TSLAx through STOCK CANDLE; if the verified buy pushes the Pum
 - The config is bound to one `$XCNDL` mint and its token program.
 - The program compares the requested buy with observed player and curve token deltas.
 - One transaction can earn at most one rung, even if it crosses several levels.
+- A wrapper buy that does not cross the next rung fails atomically; the Pump buy, token movement, game fee and score all roll back. The public builder must therefore price the target before asking for a signature.
 - Sells never lower `last_awarded_balance`; an old rung cannot be reclaimed by sell-and-rebuy.
 - Ties favor the wallet that reached the tied score first.
 - Anyone may call settlement after the end time.

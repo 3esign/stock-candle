@@ -71,7 +71,7 @@
       <div class="section-heading">
         <p class="eyebrow">PLAYER ENTRY</p>
         <h2 id="playTitle">Start with what you have.</h2>
-        <p>Use SOL and get TSLAx inside the site, then approve the game buy. The reliable launch path uses two clear wallet approvals; direct TSLAx players need only the game approval.</p>
+        <p>Start with SOL and the site handles TSLAx. When the current route fits, one wallet signature enters the game; otherwise the same flow completes safely in two approvals.</p>
       </div>
 
       <div class="trade-workspace">
@@ -83,8 +83,8 @@
         <div class="trade-form">
           <label class="amount-field" for="entryAmount">
             <span id="amountLabel">SOL to convert</span>
-            <span class="amount-box"><input id="entryAmount" inputmode="decimal" autocomplete="off" value="0.01" aria-describedby="amountHelp"><b id="amountUnit">SOL</b></span>
-            <small id="amountHelp">A fresh route is checked before your wallet is asked to sign.</small>
+            <span class="amount-box"><input id="entryAmount" inputmode="decimal" autocomplete="off" value="0.05" aria-describedby="amountHelp"><b id="amountUnit">SOL</b></span>
+            <small id="amountHelp">The site checks a fresh route and chooses the shortest safe entry.</small>
           </label>
 
           <div class="quote-panel" aria-live="polite">
@@ -111,6 +111,7 @@
           <div><dt>Wallet</dt><dd id="walletValue">Not connected</dd></div>
           <div><dt>Conversion</dt><dd>Jupiter route, settled on Solana</dd></div>
           <div><dt>Game buy</dt><dd>Pump buy verified by the game program</dd></div>
+          <div><dt>Approvals</dt><dd>One when the combined route fits, otherwise two</dd></div>
           <div><dt>Custody</dt><dd>None. Your wallet signs and owns the result.</dd></div>
         </dl>
       </div>
@@ -123,7 +124,7 @@
       </div>
       <ol class="steps">
         <li><span>01</span><strong>Enter</strong><p>Swap SOL to TSLAx here, or use TSLAx you already hold.</p></li>
-        <li><span>02</span><strong>Buy</strong><p>Your wallet buys <strong>$XCNDL</strong> through the TSLAx Pump curve.</p></li>
+        <li><span>02</span><strong>Buy</strong><p>The builder prices the exact <strong>$XCNDL</strong> needed to cross the next rung within your TSLAx budget.</p></li>
         <li><span>03</span><strong>Cross</strong><p>The buy that crosses the next locked candle earns one rung.</p></li>
         <li><span>04</span><strong>Settle</strong><p>After close, anyone can send the full game pot to the on-chain leader.</p></li>
       </ol>
